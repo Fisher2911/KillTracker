@@ -1,0 +1,17 @@
+# Number of kills
+1:
+  # Rewards
+  1:
+    # reward type
+    type: command
+    command: give %player% diamond
+  2:
+    type: message
+    message: You have killed 10 hostile mobs!
+  3:
+    type: items
+    items:
+      1:
+        DIAMOND: 64
+      2:
+        IRON_SWORD: 1

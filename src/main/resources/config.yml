@@ -1,0 +1,7 @@
+# For example, if there is a set of rewards for a cow, and rewards for passive mobs,
+# if a player kills a cow and this setting is true, they will also get rewards for
+# passive mobs
+use-all-tiered-rewards: false
+# amount of times a player can kill the same person
+# and still have it count for their kills
+player-kill-farm-limit: 5
