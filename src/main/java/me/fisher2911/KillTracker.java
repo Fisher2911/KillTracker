@@ -31,6 +31,7 @@ public class KillTracker extends JavaPlugin {
         this.userManager = new UserManager(this);
         this.database = new SQLiteDatabase(this);
         registerListeners();
+        settings.loadAllRewards();
     }
 
     private void registerListeners() {
@@ -39,6 +40,10 @@ public class KillTracker extends JavaPlugin {
                 forEach(listener -> getServer().
                         getPluginManager().
                         registerEvents(listener, this));
+    }
+
+    public void sendError(final String error) {
+        this.getLogger().severe(error);
     }
 
     public Settings getSettings() {
