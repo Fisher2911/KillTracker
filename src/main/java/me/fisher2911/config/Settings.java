@@ -103,7 +103,7 @@ public class Settings {
     }
 
     private void loadNeutralMobsRewards() {
-        final File file = getFile("NeutralMobsRewards");
+        final File file = getFile("NeutralMobsRewards.yml");
             if (!file.exists()) {
                 return;
             }
