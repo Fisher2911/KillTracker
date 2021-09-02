@@ -1,6 +1,8 @@
 package me.fisher2911.config;
 
 import me.fisher2911.KillTracker;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -48,6 +50,9 @@ public class Settings {
         return neutralMobsRewards;
     }
 
+    private static final String KILLS_SECTION = "kills";
+    private static final String MILESTONE_SECTION = "milestones";
+
     public void loadAllRewards() {
         loadPlayerRewards();
         loadHostileMobRewards();
@@ -78,7 +83,8 @@ public class Settings {
     }
 
     private void loadPlayerRewards() {
-        final File file = getFile("PlayerRewards.yml");
+        final String fileName = "PlayerRewards.yml";
+        final File file = getFile(fileName);
         if (!file.exists()) {
             return;
         }
@@ -86,7 +92,8 @@ public class Settings {
     }
 
     private void loadHostileMobRewards() {
-        final File file = getFile("HostileMobsRewards.yml");
+        final String fileName = "HostileMobsRewards.yml";
+        final File file = getFile(fileName);
         if (!file.exists()) {
             return;
         }
@@ -94,7 +101,8 @@ public class Settings {
     }
 
     private void loadPassiveMobRewards() {
-        final File file = getFile("PassiveMobsRewards.yml");
+        final String fileName = "PassiveMobsRewards.yml";
+        final File file = getFile(fileName);
         if (!file.exists()) {
             return;
         }
@@ -102,7 +110,8 @@ public class Settings {
     }
 
     private void loadNeutralMobsRewards() {
-        final File file = getFile("NeutralMobsRewards.yml");
+        final String fileName = "NeutralMobsRewards.yml";
+        final File file = getFile(fileName);
         if (!file.exists()) {
             return;
         }
@@ -119,8 +128,32 @@ public class Settings {
 
     private Rewards loadRewards(final File file) {
         final Rewards rewards = new Rewards(plugin);
-        final FileConfiguration configuration = YamlConfiguration.loadConfiguration(file);
+        if (!file.exists()) {
+            return rewards;
+        }
         final String fileName = file.getName();
+        final YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+        final ConfigurationSection killsSection = config.getConfigurationSection(KILLS_SECTION);
+        if (killsSection != null) {
+            addRewards(rewards, loadRewards(killsSection, fileName));
+        }
+        final ConfigurationSection milestoneSection = config.getConfigurationSection(MILESTONE_SECTION);
+        if (milestoneSection != null) {
+            addRewardsMilestones(rewards, loadRewards(milestoneSection, fileName));
+        }
+        return rewards;
+    }
+
+    private void addRewards(final Rewards rewards, final Map<Integer, Reward> rewardMap) {
+        rewardMap.forEach(rewards::addReward);
+    }
+
+    private void addRewardsMilestones(final Rewards rewards, final Map<Integer, Reward> rewardMap) {
+        rewardMap.forEach(rewards::addRewardAtMilestone);
+    }
+
+    private Map<Integer, Reward> loadRewards(final ConfigurationSection configuration, final String fileName) {
+        final Map<Integer, Reward> rewardMap = new HashMap<>();
         plugin.debug("Keys = " + configuration.getKeys(false));
         plugin.debug("Path = " + configuration.getCurrentPath());
         for (final String key : configuration.getKeys(false)) {
@@ -153,7 +186,8 @@ public class Settings {
                             plugin.debug("reward is null");
                             continue;
                         }
-                        rewards.addReward(killsRequired, reward);
+                        rewardMap.put(killsRequired, reward);
+                        plugin.debug("Added reward: " + reward);
                     } catch (final IllegalArgumentException exception) {
                         plugin.sendError(exception.getMessage());
                     }
@@ -164,8 +198,8 @@ public class Settings {
                         "for number of kills in file: " + fileName);
             }
         }
-        plugin.debug("rewards = " + rewards);
-        return rewards;
+        plugin.debug("rewards = " + rewardMap);
+        return rewardMap;
     }
 
     private static final String COMMAND_REWARD = "COMMAND";
@@ -203,7 +237,7 @@ public class Settings {
                     section.getCurrentPath());
             return null;
         }
-        return new CommandReward(message);
+        return new MessageReward(ChatColor.translateAlternateColorCodes('&', message));
     }
 
     private Reward loadItemsReward(final String fileName, final ConfigurationSection section) {

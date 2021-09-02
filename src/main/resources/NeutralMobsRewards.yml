@@ -1,15 +1,30 @@
 # Number of kills
-1:
-  # Rewards
+kills:
   1:
-    # reward type
-    type: command
-    command: give %player% diamond
-  2:
-    type: message
-    message: You have killed 10 neutral mobs!
-  3:
-    type: items
-    items:
-      DIAMOND: 64
-      IRON_SWORD: 1
+    # Rewards
+    1:
+      # reward type
+      type: command
+      command: give %player% diamond
+    2:
+      type: message
+      message: You have killed 10 neutral mobs!
+    3:
+      type: items
+      items:
+        DIAMOND: 64
+        IRON_SWORD: 1
+milestones:
+  5:
+    1:
+      # reward type
+      type: command
+      command: effect give %player% regeneration 10 10
+    2:
+      type: message
+      message: '&3You have completed a milestone!'
+    3:
+      type: items
+      items:
+        EMERALD: 3
+        BEDROCK: 1
