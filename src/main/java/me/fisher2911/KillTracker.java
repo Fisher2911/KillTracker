@@ -15,6 +15,7 @@ public class KillTracker extends JavaPlugin {
     private Settings settings;
     private UserManager userManager;
     private Database database;
+    private final boolean debug = true;
 
     @Override
     public void onEnable() {
@@ -56,5 +57,11 @@ public class KillTracker extends JavaPlugin {
 
     public Database getDatabase() {
         return database;
+    }
+
+    public void debug(final String message) {
+        if (debug) {
+            this.getLogger().warning("[DEBUG]: " + message);
+        }
     }
 }

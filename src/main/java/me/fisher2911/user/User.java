@@ -34,7 +34,7 @@ public class User {
     }
 
     public int getEntityKillAmount(final String entity) {
-        return entityKills.get(entity);
+        return entityKills.getOrDefault(entity, 0);
     }
 
     public int getPlayerKillAmount(final UUID player) {

@@ -36,6 +36,7 @@ public class KillListener implements Listener {
         final UUID uuid = player.getUniqueId();
         final Optional<User> optionalUser = userManager.getUser(uuid);
         optionalUser.ifPresent(user -> {
+            plugin.debug("User is present: " + uuid);
             if (entity instanceof final Player killedPlayer) {
                 checkPlayerRewards(killedPlayer, user);
                 return;
@@ -45,11 +46,13 @@ public class KillListener implements Listener {
     }
 
     private void checkEntityRewards(final Entity killed, final User killer) {
+        plugin.debug("Checking entity rewards");
         final String entityType = killed.getType().toString();
         final int amount = killer.getEntityKillAmount(entityType);
         final Optional<Rewards> optionalRewards = settings.getEntityRewards(entityType);
         Rewards rewards;
         if (optionalRewards.isPresent()) {
+            plugin.debug("Rewards present");
              rewards = optionalRewards.get();
         } else if (killed instanceof Monster) {
             rewards = settings.getHostileMobsRewards();

@@ -34,6 +34,7 @@ public class Rewards {
 
     public void applyRewards(final OfflinePlayer player, final int amount) {
         final Collection<Reward> rewardList = this.rewards.get(amount);
+        plugin.debug("Rewards Total: " + rewardList);
         if (rewardList != null) {
             rewardList.forEach(reward -> reward.apply(player));
         }

@@ -57,10 +57,9 @@ public class Settings {
     }
 
     private void loadMobsRewards() {
-        final File folder = getFile("mobs");
+        final File folder = new File(dataFolder, "mobs");
         if (!folder.isDirectory()) {
-            plugin.sendError("Could not finds 'mobs' directory.");
-            return;
+            folder.mkdirs();
         }
         final File[] files = folder.listFiles();
         if (files == null) {
@@ -104,10 +103,10 @@ public class Settings {
 
     private void loadNeutralMobsRewards() {
         final File file = getFile("NeutralMobsRewards.yml");
-            if (!file.exists()) {
-                return;
-            }
-            this.neutralMobsRewards = loadRewards(file);
+        if (!file.exists()) {
+            return;
+        }
+        this.neutralMobsRewards = loadRewards(file);
     }
 
     private File getFile(final String name) {
@@ -122,27 +121,42 @@ public class Settings {
         final Rewards rewards = new Rewards(plugin);
         final FileConfiguration configuration = YamlConfiguration.loadConfiguration(file);
         final String fileName = file.getName();
+        plugin.debug("Keys = " + configuration.getKeys(false));
+        plugin.debug("Path = " + configuration.getCurrentPath());
         for (final String key : configuration.getKeys(false)) {
+            plugin.debug("Key is " + key);
             try {
                 final int killsRequired = Integer.parseInt(key);
-                final ConfigurationSection rewardConfiguration =
+                plugin.debug("Kills required: " + killsRequired);
+                final ConfigurationSection rewardsListConfiguration =
                         configuration.getConfigurationSection(key);
-                if (rewardConfiguration == null) {
+                if (rewardsListConfiguration == null) {
+                    plugin.debug("RewardsListConfiguration null");
                     continue;
                 }
-                final String type = rewardConfiguration.getString("type");
-                if (type == null) {
-                    continue;
-                }
-                
-                try {
-                    final Reward reward = loadRewardFromType(type, fileName, rewardConfiguration);
-                    if (reward == null) {
+                for (final String rewardKey : rewardsListConfiguration.getKeys(false)) {
+                    final ConfigurationSection rewardConfiguration =
+                            rewardsListConfiguration.getConfigurationSection(rewardKey);
+                    if (rewardConfiguration == null) {
+                        plugin.debug("RewardConfiguration null");
                         continue;
                     }
-                    rewards.addReward(killsRequired, reward);
-                } catch (final IllegalArgumentException exception) {
-                    plugin.sendError(exception.getMessage());
+                    final String type = rewardConfiguration.getString("type");
+                    plugin.debug("type is " + type);
+                    if (type == null) {
+                        continue;
+                    }
+
+                    try {
+                        final Reward reward = loadRewardFromType(type, fileName, rewardConfiguration);
+                        if (reward == null) {
+                            plugin.debug("reward is null");
+                            continue;
+                        }
+                        rewards.addReward(killsRequired, reward);
+                    } catch (final IllegalArgumentException exception) {
+                        plugin.sendError(exception.getMessage());
+                    }
                 }
 
             } catch (final NumberFormatException exception) {
@@ -150,6 +164,7 @@ public class Settings {
                         "for number of kills in file: " + fileName);
             }
         }
+        plugin.debug("rewards = " + rewards);
         return rewards;
     }
 

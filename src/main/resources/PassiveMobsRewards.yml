@@ -11,7 +11,5 @@
   3:
     type: items
     items:
-      1:
-        DIAMOND: 64
-      2:
-        IRON_SWORD: 1
+      DIAMOND: 64
+      IRON_SWORD: 1
