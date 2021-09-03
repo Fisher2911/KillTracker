@@ -28,8 +28,32 @@ public class Rewards {
         this.rewards.put(amount, reward);
     }
 
+    public void addRewards(final int milestone, final List<Reward> rewards) {
+        for (final Reward reward : rewards) {
+            this.addReward(milestone, reward);
+        }
+    }
+
+    public void addReward(final int milestone, final Reward... rewards) {
+        for (final Reward reward : rewards) {
+            this.addReward(milestone, reward);
+        }
+    }
+
     public void addRewardAtMilestone(final int milestone, final Reward reward) {
         this.rewardAtMilestone.put(milestone, reward);
+    }
+
+    public void addRewardsAtMilestone(final int milestone, final List<Reward> rewards) {
+        for (final Reward reward : rewards) {
+            this.addRewardAtMilestone(milestone, reward);
+        }
+    }
+
+    public void addRewardAtMilestone(final int milestone, final Reward... rewards) {
+        for (final Reward reward : rewards) {
+            this.addRewardAtMilestone(milestone, reward);
+        }
     }
 
     public void applyRewards(final OfflinePlayer player, final int amount) {

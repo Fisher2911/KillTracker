@@ -144,16 +144,16 @@ public class Settings {
         return rewards;
     }
 
-    private void addRewards(final Rewards rewards, final Map<Integer, Reward> rewardMap) {
-        rewardMap.forEach(rewards::addReward);
+    private void addRewards(final Rewards rewards, final Map<Integer, List<Reward>> rewardMap) {
+        rewardMap.forEach(rewards::addRewards);
     }
 
-    private void addRewardsMilestones(final Rewards rewards, final Map<Integer, Reward> rewardMap) {
-        rewardMap.forEach(rewards::addRewardAtMilestone);
+    private void addRewardsMilestones(final Rewards rewards, final Map<Integer, List<Reward>> rewardMap) {
+        rewardMap.forEach(rewards::addRewardsAtMilestone);
     }
 
-    private Map<Integer, Reward> loadRewards(final ConfigurationSection configuration, final String fileName) {
-        final Map<Integer, Reward> rewardMap = new HashMap<>();
+    private Map<Integer, List<Reward>> loadRewards(final ConfigurationSection configuration, final String fileName) {
+        final Map<Integer, List<Reward>> rewardMap = new HashMap<>();
         plugin.debug("Keys = " + configuration.getKeys(false));
         plugin.debug("Path = " + configuration.getCurrentPath());
         for (final String key : configuration.getKeys(false)) {
@@ -186,7 +186,10 @@ public class Settings {
                             plugin.debug("reward is null");
                             continue;
                         }
-                        rewardMap.put(killsRequired, reward);
+                        final List<Reward> rewardList = rewardMap.
+                                computeIfAbsent(killsRequired, v -> new ArrayList<>());
+                        rewardList.add(reward);
+                        rewardMap.put(killsRequired, rewardList);
                         plugin.debug("Added reward: " + reward);
                     } catch (final IllegalArgumentException exception) {
                         plugin.sendError(exception.getMessage());
@@ -237,6 +240,7 @@ public class Settings {
                     section.getCurrentPath());
             return null;
         }
+        plugin.debug("Message is: " + message);
         return new MessageReward(ChatColor.translateAlternateColorCodes('&', message));
     }
 
