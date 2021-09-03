@@ -1,4 +1,4 @@
-package me.fisher2911.config;
+package me.fisher2911.killtracker.config;
 
 import org.bukkit.OfflinePlayer;
 

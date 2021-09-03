@@ -1,10 +1,10 @@
-package me.fisher2911.listeners;
+package me.fisher2911.killtracker.listeners;
 
-import me.fisher2911.KillTracker;
-import me.fisher2911.config.Settings;
-import me.fisher2911.database.Database;
-import me.fisher2911.user.User;
-import me.fisher2911.user.UserManager;
+import me.fisher2911.killtracker.KillTracker;
+import me.fisher2911.killtracker.config.Settings;
+import me.fisher2911.killtracker.database.Database;
+import me.fisher2911.killtracker.user.User;
+import me.fisher2911.killtracker.user.UserManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

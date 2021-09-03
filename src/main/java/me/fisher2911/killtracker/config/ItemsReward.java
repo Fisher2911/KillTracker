@@ -1,14 +1,11 @@
-package me.fisher2911.config;
+package me.fisher2911.killtracker.config;
 
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Wolf;
 import org.bukkit.inventory.ItemStack;
 
-import java.time.LocalDate;
-import java.util.Locale;
 import java.util.Map;
 
 public class ItemsReward implements Reward {

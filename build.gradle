@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'com.github.johnrengelman.shadow' version '6.1.0'
 }
 
 group 'org.example'
@@ -8,14 +9,27 @@ version '1.0-SNAPSHOT'
 repositories {
     mavenCentral()
     maven { url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
+    maven { url = "https://repo.mattstudios.me/artifactory/public/" }
 }
 
 dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
     compileOnly 'org.spigotmc:spigot-api:1.17-R0.1-SNAPSHOT'
+    implementation "dev.triumphteam:triumph-gui:3.0.3"
 }
+
+apply plugin: 'com.github.johnrengelman.shadow'
 
 test {
     useJUnitPlatform()
+}
+
+shadowJar {
+    relocate 'dev.triumphteam.gui', 'me.fisher2911.killtracker.gui'
+}
+
+
+shadowJar {
+    destinationDirectory.set(file("/server/plugins"))
 }

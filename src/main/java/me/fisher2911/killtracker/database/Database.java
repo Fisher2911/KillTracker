@@ -1,6 +1,6 @@
-package me.fisher2911.database;
+package me.fisher2911.killtracker.database;
 
-import me.fisher2911.user.User;
+import me.fisher2911.killtracker.user.User;
 
 import java.util.Optional;
 import java.util.UUID;

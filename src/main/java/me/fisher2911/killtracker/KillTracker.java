@@ -1,11 +1,11 @@
-package me.fisher2911;
+package me.fisher2911.killtracker;
 
-import me.fisher2911.config.Settings;
-import me.fisher2911.database.Database;
-import me.fisher2911.database.SQLiteDatabase;
-import me.fisher2911.listeners.KillListener;
-import me.fisher2911.listeners.PlayerJoinListener;
-import me.fisher2911.user.UserManager;
+import me.fisher2911.killtracker.config.Settings;
+import me.fisher2911.killtracker.database.Database;
+import me.fisher2911.killtracker.database.SQLiteDatabase;
+import me.fisher2911.killtracker.listeners.KillListener;
+import me.fisher2911.killtracker.listeners.PlayerJoinListener;
+import me.fisher2911.killtracker.user.UserManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;

@@ -1,16 +1,12 @@
-package me.fisher2911.config;
+package me.fisher2911.killtracker.config;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
-import me.fisher2911.KillTracker;
-import me.fisher2911.user.User;
+import me.fisher2911.killtracker.KillTracker;
 import org.bukkit.OfflinePlayer;
 
-import java.awt.*;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class Rewards {
 

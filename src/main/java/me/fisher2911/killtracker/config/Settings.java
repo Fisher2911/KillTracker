@@ -1,14 +1,11 @@
-package me.fisher2911.config;
+package me.fisher2911.killtracker.config;
 
-import me.fisher2911.KillTracker;
-import org.bukkit.Bukkit;
+import me.fisher2911.killtracker.KillTracker;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
-import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
 import java.util.*;

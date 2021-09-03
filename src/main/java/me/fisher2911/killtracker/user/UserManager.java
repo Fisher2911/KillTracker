@@ -1,6 +1,6 @@
-package me.fisher2911.user;
+package me.fisher2911.killtracker.user;
 
-import me.fisher2911.KillTracker;
+import me.fisher2911.killtracker.KillTracker;
 
 import java.util.HashMap;
 import java.util.Map;

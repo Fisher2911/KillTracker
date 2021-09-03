@@ -1,16 +1,15 @@
-package me.fisher2911.listeners;
+package me.fisher2911.killtracker.listeners;
 
-import me.fisher2911.KillTracker;
-import me.fisher2911.config.Rewards;
-import me.fisher2911.config.Settings;
-import me.fisher2911.user.User;
-import me.fisher2911.user.UserManager;
+import me.fisher2911.killtracker.KillTracker;
+import me.fisher2911.killtracker.config.Rewards;
+import me.fisher2911.killtracker.config.Settings;
+import me.fisher2911.killtracker.user.User;
+import me.fisher2911.killtracker.user.UserManager;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 
-import javax.swing.text.html.Option;
 import java.util.Optional;
 import java.util.UUID;
 

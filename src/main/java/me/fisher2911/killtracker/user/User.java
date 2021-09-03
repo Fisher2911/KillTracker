@@ -1,4 +1,4 @@
-package me.fisher2911.user;
+package me.fisher2911.killtracker.user;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
