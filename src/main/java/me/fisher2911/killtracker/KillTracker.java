@@ -8,11 +8,15 @@ import me.fisher2911.killtracker.database.SQLiteDatabase;
 import me.fisher2911.killtracker.gui.StatsMenu;
 import me.fisher2911.killtracker.listeners.KillListener;
 import me.fisher2911.killtracker.listeners.PlayerJoinListener;
+import me.fisher2911.killtracker.user.User;
 import me.fisher2911.killtracker.user.UserManager;
 import me.mattstudios.mf.base.CommandManager;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
+import java.util.Optional;
 
 public class KillTracker extends JavaPlugin {
 
@@ -27,11 +31,21 @@ public class KillTracker extends JavaPlugin {
     @Override
     public void onEnable() {
         load();
+        for (final Player player : Bukkit.getOnlinePlayers()) {
+            database.loadUser(player.getUniqueId()).
+                    ifPresent(userManager::addUser);
+        }
     }
 
     @Override
     public void onDisable() {
-        
+        Bukkit.getOnlinePlayers().
+                forEach(player -> {
+                    final Optional<User> optionalUser = this.userManager.
+                            getUser(player.getUniqueId());
+                    optionalUser.ifPresent(database::saveUser);
+                });
+        database.close();
     }
 
     private void load() {
@@ -80,7 +94,11 @@ public class KillTracker extends JavaPlugin {
     }
 
     public void debug(final String message) {
-        if (this.debug) {
+        debug(message, this.debug);
+    }
+
+    public void debug(final String message, final boolean send) {
+        if (send) {
             this.getLogger().warning("[DEBUG]: " + message);
         }
     }

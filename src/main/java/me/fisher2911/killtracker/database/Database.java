@@ -9,5 +9,6 @@ public interface Database {
 
     Optional<User> loadUser(final UUID uuid);
     void saveUser(final User user);
+    void close();
 
 }

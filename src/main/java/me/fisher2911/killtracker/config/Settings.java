@@ -130,24 +130,24 @@ public class Settings {
     private Rewards loadRewards(final File file) {
         final Rewards rewards = new Rewards(plugin);
         if (!file.exists()) {
-            plugin.debug(file.getName() + " does not exist");
+            plugin.debug(file.getName() + " does not exist", false);
             return rewards;
         }
         final String fileName = file.getName();
         final YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
         final ConfigurationSection killsSection = config.getConfigurationSection(KILLS_SECTION);
         if (killsSection != null) {
-            plugin.debug("kills section not null");
+            plugin.debug("kills section not null", false);
             addRewards(rewards, loadRewards(killsSection, fileName));
         } else {
-            plugin.debug("Kills section null");
+            plugin.debug("Kills section null", false);
         }
         final ConfigurationSection milestoneSection = config.getConfigurationSection(MILESTONE_SECTION);
         if (milestoneSection != null) {
-            plugin.debug("milestone section not null");
+            plugin.debug("milestone section not null", false);
             addRewardsMilestones(rewards, loadRewards(milestoneSection, fileName));
         } else {
-            plugin.debug("milestone section null");
+            plugin.debug("milestone section null", false);
         }
         return rewards;
     }
@@ -162,28 +162,28 @@ public class Settings {
 
     private Map<Integer, List<Reward>> loadRewards(final ConfigurationSection configuration, final String fileName) {
         final Map<Integer, List<Reward>> rewardMap = new HashMap<>();
-        plugin.debug("Keys = " + configuration.getKeys(false));
-        plugin.debug("Path = " + configuration.getCurrentPath());
+        plugin.debug("Keys = " + configuration.getKeys(false), false);
+        plugin.debug("Path = " + configuration.getCurrentPath(), false);
         for (final String key : configuration.getKeys(false)) {
-            plugin.debug("Key is " + key);
+            plugin.debug("Key is " + key, false);
             try {
                 final int killsRequired = Integer.parseInt(key);
-                plugin.debug("Kills required: " + killsRequired);
+                plugin.debug("Kills required: " + killsRequired, false);
                 final ConfigurationSection rewardsListConfiguration =
                         configuration.getConfigurationSection(key);
                 if (rewardsListConfiguration == null) {
-                    plugin.debug("RewardsListConfiguration null");
+                    plugin.debug("RewardsListConfiguration null", false);
                     continue;
                 }
                 for (final String rewardKey : rewardsListConfiguration.getKeys(false)) {
                     final ConfigurationSection rewardConfiguration =
                             rewardsListConfiguration.getConfigurationSection(rewardKey);
                     if (rewardConfiguration == null) {
-                        plugin.debug("RewardConfiguration null");
+                        plugin.debug("RewardConfiguration null", false);
                         continue;
                     }
                     final String type = rewardConfiguration.getString("type");
-                    plugin.debug("type is " + type);
+                    plugin.debug("type is " + type, false);
                     if (type == null) {
                         continue;
                     }
@@ -191,14 +191,14 @@ public class Settings {
                     try {
                         final Reward reward = loadRewardFromType(type, fileName, rewardConfiguration);
                         if (reward == null) {
-                            plugin.debug("reward is null");
+                            plugin.debug("reward is null", false);
                             continue;
                         }
                         final List<Reward> rewardList = rewardMap.
                                 computeIfAbsent(killsRequired, v -> new ArrayList<>());
                         rewardList.add(reward);
                         rewardMap.put(killsRequired, rewardList);
-                        plugin.debug("Added reward: " + reward);
+                        plugin.debug("Added reward: " + reward, false);
                     } catch (final IllegalArgumentException exception) {
                         plugin.sendError(exception.getMessage());
                     }
@@ -209,7 +209,7 @@ public class Settings {
                         "for number of kills in file: " + fileName);
             }
         }
-        plugin.debug("rewards = " + rewardMap);
+        plugin.debug("rewards = " + rewardMap, false);
         return rewardMap;
     }
 
@@ -248,7 +248,7 @@ public class Settings {
                     section.getCurrentPath());
             return null;
         }
-        plugin.debug("Message is: " + message);
+        plugin.debug("Message is: " + message, false);
         return new MessageReward(ChatColor.translateAlternateColorCodes('&', message));
     }
 

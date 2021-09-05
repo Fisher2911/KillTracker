@@ -43,4 +43,12 @@ public class User {
     public UUID getUuid() {
         return uuid;
     }
+
+    public Map<String, Integer> getEntityKills() {
+        return entityKills;
+    }
+
+    public Map<UUID, Integer> getPlayerKills() {
+        return playerKills;
+    }
 }

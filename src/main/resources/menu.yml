@@ -1,8 +1,19 @@
 rows: 6
 title: Stats
+buttons:
+  next-page-item:
+    name: '&bNext Page'
+    material: ARROW
+    amount: 1
+    glowing: true
+  previous-page-item:
+    name: '&bPrevious Page'
+    material: ARROW
+    amount: 1
+    glowing: true
 items:
   0:
-    material: GOLD_BLOCK;
+    material: GOLD_BLOCK
     amount: 3
     name: test
     glowing: true
@@ -13,7 +24,15 @@ items:
     item-flags:
       - HIDE_ENCHANTS
   1:
-    material: GOLD_INGOT;
+    material: GOLD_INGOT
+    amount: 1
+    name: test2
+    type: pig
+    lore:
+      - ' '
+      - '%kills%'
+  58:
+    material: GOLD_INGOT
     amount: 1
     name: test2
     type: pig

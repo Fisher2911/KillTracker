@@ -6,6 +6,7 @@ import me.fisher2911.killtracker.KillTracker;
 import me.fisher2911.killtracker.gui.GuiInfo;
 import me.fisher2911.killtracker.gui.StatGuiItem;
 import net.kyori.adventure.text.Component;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -38,6 +39,18 @@ public class GuiSettings {
             return;
         }
         final String title = config.getString("title");
+        final ConfigurationSection buttonsSection = config.getConfigurationSection("buttons");
+        final GuiItem nextPageItem;
+        final GuiItem previousPageItem;
+        if (buttonsSection == null) {
+            plugin.debug("Could not find buttons section in menu.yml");
+            nextPageItem = new GuiItem(Material.STONE);
+            previousPageItem = new GuiItem(Material.STONE);
+        } else {
+            nextPageItem = loadItem(buttonsSection, "next-page-item");
+            previousPageItem = loadItem(buttonsSection, "previous-page-item");
+
+        }
         final Map<Integer, GuiItem> itemMap = new HashMap<>();
         for (final String key : section.getKeys(false)) {
             try {
@@ -53,7 +66,16 @@ public class GuiSettings {
                 plugin.sendError(key + " is not a valid slot in menu.yml");
             }
         }
-        this.guiInfo = new GuiInfo(title, itemMap, rows);
+        this.guiInfo = new GuiInfo(title, itemMap, rows, previousPageItem, nextPageItem);
+    }
+
+    private GuiItem loadItem(final ConfigurationSection section, final String path) {
+        final ConfigurationSection otherSection = section.getConfigurationSection(path);
+        if (otherSection == null) {
+            // todo set to air
+            return new GuiItem(Material.STONE);
+        }
+        return loadItem(otherSection);
     }
 
     private GuiItem loadItem(final ConfigurationSection section) {
@@ -97,11 +119,16 @@ public class GuiSettings {
         }
 
         if (name != null) {
-            builder.name(Component.text(name));
+            builder.name(Component.text(ChatColor.
+                    translateAlternateColorCodes('&', name)));
         }
         itemFlags.forEach(builder::flags);
         final List<Component> componentLore = new ArrayList<>();
-        lore.forEach(line -> componentLore.add(Component.text(line)));
+        lore.forEach(line -> componentLore.add(
+                Component.text(
+                ChatColor.
+                        translateAlternateColorCodes('&',
+                                line))));
         builder.glow(glowing).lore(componentLore).amount(amount);
         if (entityType != null) {
             return new StatGuiItem(builder.asGuiItem(), entityType.toUpperCase());

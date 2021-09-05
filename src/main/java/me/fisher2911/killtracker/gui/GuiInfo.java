@@ -10,13 +10,19 @@ public class GuiInfo {
     private final Map<Integer, GuiItem> guiItemMap;
     // Key is entity type, value is lore line to be displayed in the gui
     private final int rows;
+    private GuiItem previousPageItem;
+    private GuiItem nextPageItem;
 
     public GuiInfo(final String title,
                    final Map<Integer, GuiItem> guiItemMap,
-                   final int rows) {
+                   final int rows,
+                   final GuiItem previousPageItem,
+                   final GuiItem nextPageItem) {
         this.title = title;
         this.guiItemMap = guiItemMap;
         this.rows = rows;
+        this.previousPageItem = previousPageItem;
+        this.nextPageItem = nextPageItem;
     }
 
     public String getTitle() {
@@ -29,5 +35,13 @@ public class GuiInfo {
 
     public int getRows() {
         return rows;
+    }
+
+    public GuiItem getPreviousPageItem() {
+        return previousPageItem;
+    }
+
+    public GuiItem getNextPageItem() {
+        return nextPageItem;
     }
 }
