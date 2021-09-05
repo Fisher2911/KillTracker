@@ -1,0 +1,22 @@
+rows: 6
+title: Stats
+items:
+  0:
+    material: GOLD_BLOCK;
+    amount: 3
+    name: test
+    glowing: true
+    type: cow
+    lore:
+      - ' '
+      - '%kills%'
+    item-flags:
+      - HIDE_ENCHANTS
+  1:
+    material: GOLD_INGOT;
+    amount: 1
+    name: test2
+    type: pig
+    lore:
+      - ' '
+      - '%kills%'

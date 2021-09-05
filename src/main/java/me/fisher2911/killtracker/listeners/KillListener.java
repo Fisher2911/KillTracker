@@ -35,7 +35,6 @@ public class KillListener implements Listener {
         final UUID uuid = player.getUniqueId();
         final Optional<User> optionalUser = userManager.getUser(uuid);
         optionalUser.ifPresent(user -> {
-            plugin.debug("User is present: " + uuid);
             if (entity instanceof final Player killedPlayer) {
                 user.addPlayerKill(killedPlayer.getUniqueId());
                 checkPlayerRewards(killedPlayer, user);

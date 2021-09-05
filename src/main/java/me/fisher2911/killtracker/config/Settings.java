@@ -68,14 +68,16 @@ public class Settings {
             return;
         }
         for (final File file : files) {
+            if (file.getName().toLowerCase(Locale.ROOT).
+                    contains(".ds_store")) {
+                continue;
+            }
             final String name = file.
                     getName().
                     replace(".yml", "").
                     toUpperCase();
             final Rewards rewards = loadRewards(file);
             this.entityRewards.put(name, rewards);
-            // todo - remove debug
-            System.out.println("Loading mobs rewards: " + name);
         }
     }
 
@@ -101,8 +103,10 @@ public class Settings {
         final String fileName = "PassiveMobsRewards.yml";
         final File file = getFile(fileName);
         if (!file.exists()) {
+            plugin.debug("passive mobs file does not exist");
             return;
         }
+        plugin.debug("Loading passive mobs rewards file");
         this.passiveMobsRewards = loadRewards(file);
     }
 
@@ -116,7 +120,7 @@ public class Settings {
     }
 
     private File getFile(final String name) {
-        final File file = new File(name);
+        final File file = new File(dataFolder, name);
         if (!file.exists()) {
             plugin.saveResource(name, false);
         }
@@ -126,17 +130,24 @@ public class Settings {
     private Rewards loadRewards(final File file) {
         final Rewards rewards = new Rewards(plugin);
         if (!file.exists()) {
+            plugin.debug(file.getName() + " does not exist");
             return rewards;
         }
         final String fileName = file.getName();
         final YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
         final ConfigurationSection killsSection = config.getConfigurationSection(KILLS_SECTION);
         if (killsSection != null) {
+            plugin.debug("kills section not null");
             addRewards(rewards, loadRewards(killsSection, fileName));
+        } else {
+            plugin.debug("Kills section null");
         }
         final ConfigurationSection milestoneSection = config.getConfigurationSection(MILESTONE_SECTION);
         if (milestoneSection != null) {
+            plugin.debug("milestone section not null");
             addRewardsMilestones(rewards, loadRewards(milestoneSection, fileName));
+        } else {
+            plugin.debug("milestone section null");
         }
         return rewards;
     }

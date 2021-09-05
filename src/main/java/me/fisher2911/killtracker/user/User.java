@@ -2,7 +2,6 @@ package me.fisher2911.killtracker.user;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.EntityType;
 
 import java.util.Map;
 import java.util.UUID;
@@ -38,7 +37,7 @@ public class User {
     }
 
     public int getPlayerKillAmount(final UUID player) {
-        return playerKills.get(player);
+        return playerKills.getOrDefault(player, 0);
     }
 
     public UUID getUuid() {

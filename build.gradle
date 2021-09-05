@@ -3,7 +3,7 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '6.1.0'
 }
 
-group 'org.example'
+group 'me.fisher2911'
 version '1.0-SNAPSHOT'
 
 repositories {
@@ -17,6 +17,10 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
     compileOnly 'org.spigotmc:spigot-api:1.17-R0.1-SNAPSHOT'
     implementation "dev.triumphteam:triumph-gui:3.0.3"
+    implementation 'me.mattstudios.utils:matt-framework:1.4.6'
+    compileOnly 'org.jetbrains:annotations:16.0.2'
+    implementation "net.kyori:adventure-api:4.8.1"
+    implementation 'net.kyori:adventure-text-serializer-legacy:4.8.1'
 }
 
 apply plugin: 'com.github.johnrengelman.shadow'
@@ -27,9 +31,11 @@ test {
 
 shadowJar {
     relocate 'dev.triumphteam.gui', 'me.fisher2911.killtracker.gui'
+    relocate 'me.mattstudios.mf', 'me.fisher2911.killtracker.mf'
+    relocate 'net.kyori.adventure', 'me.fisher2911.killtracker.adventure'
 }
 
 
-shadowJar {
-    destinationDirectory.set(file("/server/plugins"))
-}
+//shadowJar {
+//    destinationDirectory.set(file("/server/plugins"))
+//}

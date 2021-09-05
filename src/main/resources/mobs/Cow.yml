@@ -12,8 +12,8 @@ kills:
     3:
       type: items
       items:
-          DIAMOND: 64
-          IRON_SWORD: 1
+        DIAMOND: 64
+        IRON_SWORD: 1
 milestones:
   5:
     1:

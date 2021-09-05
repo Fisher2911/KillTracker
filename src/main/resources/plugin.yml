@@ -2,3 +2,4 @@ name: KillTracker
 main: me.fisher2911.killtracker.KillTracker
 version: 1.0
 author: MasterOfTheFish
+api-version: 1.17
