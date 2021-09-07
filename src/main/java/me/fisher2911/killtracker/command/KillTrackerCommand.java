@@ -8,6 +8,7 @@ import me.fisher2911.killtracker.user.UserManager;
 import me.mattstudios.mf.annotations.Alias;
 import me.mattstudios.mf.annotations.Command;
 import me.mattstudios.mf.annotations.Default;
+import me.mattstudios.mf.annotations.SubCommand;
 import me.mattstudios.mf.base.CommandBase;
 import org.bukkit.entity.Player;
 
@@ -30,7 +31,25 @@ public class KillTrackerCommand extends CommandBase {
         final Optional<User> optionalUser = this.userManager.getUser(player.getUniqueId());
         optionalUser.ifPresent(user -> {
             final StatsMenu menu = plugin.getStatsMenu();
-            menu.open(user);
+            menu.openMenu(user);
+        });
+    }
+
+    @SubCommand("players")
+    public void onPlayerKillsCommand(final Player player) {
+        final Optional<User> optionalUser = this.userManager.getUser(player.getUniqueId());
+        optionalUser.ifPresent(user -> {
+            final StatsMenu menu = plugin.getStatsMenu();
+            menu.openPlayerKillsMenu(user);
+        });
+    }
+
+    @SubCommand("entities")
+    public void onEntityKillsCommand(final Player player) {
+        final Optional<User> optionalUser = this.userManager.getUser(player.getUniqueId());
+        optionalUser.ifPresent(user -> {
+            final StatsMenu menu = plugin.getStatsMenu();
+            menu.openEntityMenu(user);
         });
     }
 }

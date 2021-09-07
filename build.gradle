@@ -10,6 +10,7 @@ repositories {
     mavenCentral()
     maven { url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
     maven { url = "https://repo.mattstudios.me/artifactory/public/" }
+    maven { url = 'https://repo.aikar.co/content/groups/aikar/' }
 }
 
 dependencies {
@@ -21,7 +22,9 @@ dependencies {
     compileOnly 'org.jetbrains:annotations:16.0.2'
     implementation "net.kyori:adventure-api:4.8.1"
     implementation 'net.kyori:adventure-text-serializer-legacy:4.8.1'
+    implementation 'co.aikar:taskchain-bukkit:3.7.2'
 }
+
 
 apply plugin: 'com.github.johnrengelman.shadow'
 
@@ -33,6 +36,7 @@ shadowJar {
     relocate 'dev.triumphteam.gui', 'me.fisher2911.killtracker.gui'
     relocate 'me.mattstudios.mf', 'me.fisher2911.killtracker.mf'
     relocate 'net.kyori.adventure', 'me.fisher2911.killtracker.adventure'
+    relocate 'co.aikar.taskchain', 'me.fisher2911.killtracker.taskchain'
 }
 
 

@@ -120,7 +120,6 @@ public class SQLiteDatabase implements Database {
         }
     }
 
-    // todo
     @Override
     public Optional<User> loadUser(final UUID uuid) {
        final Map<String, Integer> entityKills = loadEntityKillsAmount(uuid);

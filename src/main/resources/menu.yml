@@ -1,41 +1,131 @@
-rows: 6
-title: Stats
-buttons:
-  next-page-item:
-    name: '&bNext Page'
-    material: ARROW
-    amount: 1
-    glowing: true
-  previous-page-item:
-    name: '&bPrevious Page'
-    material: ARROW
-    amount: 1
-    glowing: true
-items:
-  0:
-    material: GOLD_BLOCK
-    amount: 3
-    name: test
-    glowing: true
-    type: cow
-    lore:
-      - ' '
-      - '%kills%'
-    item-flags:
-      - HIDE_ENCHANTS
-  1:
-    material: GOLD_INGOT
-    amount: 1
-    name: test2
-    type: pig
-    lore:
-      - ' '
-      - '%kills%'
-  58:
-    material: GOLD_INGOT
-    amount: 1
-    name: test2
-    type: pig
-    lore:
-      - ' '
-      - '%kills%'
+main-menu:
+  rows: 6
+  title: Stats
+  border-items:
+    0:
+      material: WHITE_STAINED_GLASS_PANE
+      name: ' '
+      glowing: true
+    1:
+      material: BLACK_STAINED_GLASS_PANE
+      name: ' '
+      glowing: true
+  items:
+    0:
+      material: PLAYER_HEAD
+      amount: 3
+      name: Player Stats
+      command: stats players
+    1:
+      material: ROTTEN_FLESH
+      amount: 1
+      name: Entity Stats
+      command: stats entities
+entity-menu:
+  rows: 6
+  title: Entity Kills
+  previous-menu-item:
+    material: CHEST
+    name: Go Back
+  buttons:
+    next-page-item:
+      name: '&bNext Page'
+      material: ARROW
+      amount: 1
+      glowing: true
+    previous-page-item:
+      name: '&bPrevious Page'
+      material: ARROW
+      amount: 1
+      glowing: true
+  border-items:
+    0:
+      material: WHITE_STAINED_GLASS_PANE
+      name: ' '
+      glowing: true
+    1:
+      material: BLACK_STAINED_GLASS_PANE
+      name: ' '
+      glowing: true
+  items:
+    0:
+      material: GOLD_BLOCK
+      amount: 3
+      name: test
+      glowing: true
+      type: cow
+      lore:
+        - ' '
+        - '%kills%'
+      item-flags:
+        - HIDE_ENCHANTS
+    1:
+      material: GOLD_INGOT
+      amount: 1
+      name: test2
+      type: pig
+      lore:
+        - ' '
+        - '%kills%'
+    58:
+      material: GOLD_INGOT
+      amount: 1
+      name: test2
+      type: pig
+      lore:
+        - ' '
+        - '%kills%'
+player-menu:
+  rows: 6
+  title: Player Menu
+  previous-menu-item:
+    material: CHEST
+    name: Go Back
+  buttons:
+    next-page-item:
+      name: '&bNext Page'
+      material: ARROW
+      amount: 1
+      glowing: true
+    previous-page-item:
+      name: '&bPrevious Page'
+      material: ARROW
+      amount: 1
+      glowing: true
+  border-items:
+    0:
+      material: WHITE_STAINED_GLASS_PANE
+      name: ' '
+      glowing: true
+    1:
+      material: BLACK_STAINED_GLASS_PANE
+      name: ' '
+      glowing: true
+  items:
+    0:
+      material: GOLD_BLOCK
+      amount: 3
+      name: test
+      glowing: true
+      type: cow
+      lore:
+        - ' '
+        - '%kills%'
+      item-flags:
+        - HIDE_ENCHANTS
+    1:
+      material: GOLD_INGOT
+      amount: 1
+      name: test2
+      type: pig
+      lore:
+        - ' '
+        - '%kills%'
+    58:
+      material: GOLD_INGOT
+      amount: 1
+      name: test2
+      type: pig
+      lore:
+        - ' '
+        - '%kills%'

@@ -1,5 +1,8 @@
 package me.fisher2911.killtracker;
 
+import co.aikar.taskchain.BukkitTaskChainFactory;
+import co.aikar.taskchain.TaskChain;
+import co.aikar.taskchain.TaskChainFactory;
 import me.fisher2911.killtracker.command.KillTrackerCommand;
 import me.fisher2911.killtracker.config.GuiSettings;
 import me.fisher2911.killtracker.config.Settings;
@@ -24,9 +27,16 @@ public class KillTracker extends JavaPlugin {
     private GuiSettings guiSettings;
     private UserManager userManager;
     private Database database;
-    private StatsMenu statsMenu;
     private CommandManager commandManager;
     private final boolean debug = true;
+
+    private static TaskChainFactory taskChainFactory;
+    public static <T> TaskChain<T> newChain() {
+        return taskChainFactory.newChain();
+    }
+    public static <T> TaskChain<T> newSharedChain(String name) {
+        return taskChainFactory.newSharedChain(name);
+    }
 
     @Override
     public void onEnable() {
@@ -49,13 +59,13 @@ public class KillTracker extends JavaPlugin {
     }
 
     private void load() {
+        taskChainFactory = BukkitTaskChainFactory.create(this);
         this.settings = new Settings(this);
         this.guiSettings = new GuiSettings(this);
         this.userManager = new UserManager(this);
         this.database = new SQLiteDatabase(this);
         this.settings.loadAllRewards();
         this.guiSettings.load();
-        this.statsMenu = new StatsMenu(guiSettings.getGuiInfo());
         this.registerListeners();
         this.registerCommands();
     }
@@ -90,7 +100,7 @@ public class KillTracker extends JavaPlugin {
     }
 
     public StatsMenu getStatsMenu() {
-        return statsMenu;
+        return guiSettings.getStatsMenu();
     }
 
     public void debug(final String message) {
@@ -98,7 +108,7 @@ public class KillTracker extends JavaPlugin {
     }
 
     public void debug(final String message, final boolean send) {
-        if (send) {
+        if (send && this.debug) {
             this.getLogger().warning("[DEBUG]: " + message);
         }
     }
