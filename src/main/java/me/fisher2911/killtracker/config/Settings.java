@@ -37,10 +37,12 @@ import java.util.*;
 public class Settings {
 
     private final KillTracker plugin;
+    private final ItemLoader itemLoader;
     private final File dataFolder;
 
     public Settings(final KillTracker plugin) {
         this.plugin = plugin;
+        this.itemLoader = new ItemLoader(plugin);
         this.dataFolder = plugin.getDataFolder();
     }
 
@@ -293,26 +295,25 @@ public class Settings {
     }
 
     private Reward loadItemsReward(final String fileName, final ConfigurationSection section) {
-        final ConfigurationSection itemSection = section.getConfigurationSection("items");
-        if (itemSection == null) {
+        final ConfigurationSection itemsSection = section.getConfigurationSection("items");
+        if (itemsSection == null) {
             plugin.sendError("No items found in file " +
                     fileName +
                     " at section " +
                     section.getCurrentPath());
             return null;
         }
-        final Map<ItemStack, Integer> itemRewards = new HashMap<>();
-        for (final String item : itemSection.getKeys(false)) {
-            final int amount = itemSection.getInt(item);
-            try {
+        final Set<ItemStack> itemRewards = new HashSet<>();
+        for (final String item : itemsSection.getKeys(false)) {
+            final ConfigurationSection itemSection = itemsSection.getConfigurationSection(item);
+            if (itemSection == null) {
                 final Material material = Material.matchMaterial(item);
-                itemRewards.put(new ItemStack(material), amount);
-            } catch (final IllegalArgumentException | NullPointerException exception) {
-                plugin.sendError(item + " is not a valid material in file " +
-                        fileName +
-                        " at section " +
-                        section.getCurrentPath());
+                if (material != null) {
+                    itemRewards.add(new ItemStack(material));
+                }
+                continue;
             }
+            itemRewards.add(itemLoader.loadItem(itemSection).getItemStack());
         }
         return new ItemsReward(itemRewards);
     }

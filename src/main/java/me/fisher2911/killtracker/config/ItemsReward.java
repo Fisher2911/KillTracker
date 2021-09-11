@@ -31,12 +31,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Map;
+import java.util.Set;
 
 public class ItemsReward implements Reward {
 
-    private final Map<ItemStack, Integer> items;
+    private final Set<ItemStack> items;
 
-    public ItemsReward(final Map<ItemStack, Integer> items) {
+    public ItemsReward(final Set<ItemStack> items) {
         this.items = items;
     }
 
@@ -45,33 +46,20 @@ public class ItemsReward implements Reward {
         if (!(offlinePlayer instanceof final Player player)) {
             return;
         }
-        for (Map.Entry<ItemStack, Integer> entry : items.entrySet()) {
-            final ItemStack itemStack = entry.getKey();
-            final int amount = entry.getValue();
-            if (amount > 64) {
-                int stacks = amount / 64;
-                int leftOver = amount % 64;
-                for (int i = 0; i < stacks; i++) {
-                    addClonedItem(player, itemStack, 64);
-                }
-                addClonedItem(player, itemStack, leftOver);
-            } else {
-                addClonedItem(player, itemStack, amount);
-            }
+        for (final ItemStack itemStack : items) {
+            addItem(player, itemStack);
         }
     }
 
-    private void addClonedItem(final Player player, final ItemStack itemStack, final int amount) {
+    private void addItem(final Player player, final ItemStack itemStack) {
         final ItemStack clone = itemStack.clone();
-        clone.setAmount(amount);
 
         final Map<Integer, ItemStack> leftoverItems = player.getInventory().addItem(clone);
         if (!leftoverItems.isEmpty()) {
             final World world = player.getWorld();
             final Location location = player.getLocation();
-            leftoverItems.forEach((index, leftOverItemStack) -> {
-                world.dropItem(location, leftOverItemStack);
-            });
+            leftoverItems.forEach((index, leftOverItemStack) ->
+                    world.dropItem(location, leftOverItemStack));
         }
     }
 }
