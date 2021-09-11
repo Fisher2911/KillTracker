@@ -145,10 +145,8 @@ public class Settings {
         final String fileName = "PassiveMobsRewards.yml";
         final File file = getFile(fileName);
         if (!file.exists()) {
-            plugin.debug("passive mobs file does not exist");
             return;
         }
-        plugin.debug("Loading passive mobs rewards file");
         this.passiveMobsRewards = loadRewards(file);
     }
 
