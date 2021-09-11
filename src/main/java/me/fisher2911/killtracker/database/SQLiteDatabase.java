@@ -25,11 +25,14 @@
 package me.fisher2911.killtracker.database;
 
 import me.fisher2911.killtracker.KillTracker;
+import me.fisher2911.killtracker.user.KillInfo;
 import me.fisher2911.killtracker.user.User;
 import org.bukkit.Bukkit;
+import org.checkerframework.checker.units.qual.K;
 
 import java.io.File;
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -77,11 +80,13 @@ public class SQLiteDatabase implements Database {
     private static final String PLAYER_KILLS_UUID_COLUMN = "uuid";
     private static final String PLAYER_KILLS_KILLED_PLAYER_UUID_COLUMN = "killed_uuid";
     private static final String PLAYER_KILLS_AMOUNT_COLUMN = "kills";
+    private static final String PLAYER_KILLS_LAST_KILLED_DATE_COLUMN = "last_killed_date";
     private static final String CREATE_PLAYER_KILLS_TABLE_STATEMENT =
             "CREATE TABLE IF NOT EXISTS " + PLAYER_KILLS_TABLE_NAME + " (" +
                     PLAYER_KILLS_UUID_COLUMN + " CHAR(36), " +
                     PLAYER_KILLS_KILLED_PLAYER_UUID_COLUMN + " CHAR(36), " +
                     PLAYER_KILLS_AMOUNT_COLUMN + " INTEGER, " +
+                    PLAYER_KILLS_LAST_KILLED_DATE_COLUMN + " LOCALDATE, " +
                     "UNIQUE (" + PLAYER_KILLS_UUID_COLUMN + ", " +
                     PLAYER_KILLS_KILLED_PLAYER_UUID_COLUMN + "))";
 
@@ -95,7 +100,8 @@ public class SQLiteDatabase implements Database {
 
     private static final String LOAD_USER_PLAYER_KILLS_STATEMENT = "SELECT " +
             PLAYER_KILLS_KILLED_PLAYER_UUID_COLUMN + ", " +
-            PLAYER_KILLS_AMOUNT_COLUMN +
+            PLAYER_KILLS_AMOUNT_COLUMN + ", " +
+            PLAYER_KILLS_LAST_KILLED_DATE_COLUMN +
             " FROM " +
             PLAYER_KILLS_TABLE_NAME + " " +
             "WHERE " + PLAYER_KILLS_UUID_COLUMN + " " +
@@ -120,14 +126,16 @@ public class SQLiteDatabase implements Database {
                     PLAYER_KILLS_TABLE_NAME + " (" +
                     PLAYER_KILLS_UUID_COLUMN + ", " +
                     PLAYER_KILLS_KILLED_PLAYER_UUID_COLUMN + ", " +
-                    PLAYER_KILLS_AMOUNT_COLUMN + ") " +
-                    "VALUES (?,?,?) " +
+                    PLAYER_KILLS_AMOUNT_COLUMN + ", " +
+                    PLAYER_KILLS_LAST_KILLED_DATE_COLUMN + ") " +
+                    "VALUES (?,?,?,?) " +
                     "ON CONFLICT (" +
                     PLAYER_KILLS_UUID_COLUMN + "," +
                     PLAYER_KILLS_KILLED_PLAYER_UUID_COLUMN + ") " +
                     "DO UPDATE SET " +
                     PLAYER_KILLS_KILLED_PLAYER_UUID_COLUMN + "=?, " +
-                    PLAYER_KILLS_AMOUNT_COLUMN + "=?";
+                    PLAYER_KILLS_AMOUNT_COLUMN + "=?, " +
+                    PLAYER_KILLS_LAST_KILLED_DATE_COLUMN + "=?";
 
     private void setupTables() {
         createTable(CREATE_USER_TABLE_STATEMENT);
@@ -148,13 +156,13 @@ public class SQLiteDatabase implements Database {
     public Optional<User> loadUser(final UUID uuid) {
        final Map<String, Integer> entityKills = loadEntityKillsAmount(uuid);
        plugin.debug("Entity Kills: " + entityKills);
-       final Map<UUID, Integer> playerKills = loadPlayerKillsAmount(uuid);
+       final Map<UUID, KillInfo> playerKills = loadPlayerKillsAmount(uuid);
        plugin.debug("Player Kills: " + playerKills);
        return Optional.of(new User(uuid, entityKills, playerKills));
     }
 
-    private Map<UUID, Integer> loadPlayerKillsAmount(final UUID uuid) {
-        final Map<UUID, Integer> killsMap = new HashMap<>();
+    private Map<UUID, KillInfo> loadPlayerKillsAmount(final UUID uuid) {
+        final Map<UUID, KillInfo> killsMap = new HashMap<>();
         ResultSet results = null;
         try (final PreparedStatement statement = getConnection().prepareStatement(
                 LOAD_USER_PLAYER_KILLS_STATEMENT);
@@ -164,10 +172,12 @@ public class SQLiteDatabase implements Database {
             while (results.next()) {
                 final String killedUuidString = results.getString(PLAYER_KILLS_KILLED_PLAYER_UUID_COLUMN);
                 final int kills = results.getInt(PLAYER_KILLS_AMOUNT_COLUMN);
+                final Timestamp lastKilledDate = results.getTimestamp(PLAYER_KILLS_LAST_KILLED_DATE_COLUMN);
                 if (killedUuidString == null) {
                     continue;
                 }
-                killsMap.put(UUID.fromString(killedUuidString), kills);
+                final KillInfo killInfo = new KillInfo(kills, lastKilledDate.toLocalDateTime());
+                killsMap.put(UUID.fromString(killedUuidString), killInfo);
             }
         } catch (final Exception exception) {
             exception.printStackTrace();
@@ -240,19 +250,23 @@ public class SQLiteDatabase implements Database {
     }
 
     private void saveUserPlayerKills(final User user) {
-        final Map<UUID, Integer> playerKills = user.getPlayerKills();
+        final Map<UUID, KillInfo> playerKills = user.getPlayerKills();
         try (final PreparedStatement statement = getConnection().prepareStatement(
                 SAVE_USER_PLAYER_KILLS_STATEMENT
         )) {
             final String uuid = user.getUuid().toString();
-            for (final Map.Entry<UUID, Integer> entry : playerKills.entrySet()) {
+            for (final Map.Entry<UUID, KillInfo> entry : playerKills.entrySet()) {
                 final String killedUuid = entry.getKey().toString();
-                final int kills = entry.getValue();
+                final KillInfo killInfo = entry.getValue();
+                final int kills = killInfo.getKills();
+                final Timestamp lastKilled = Timestamp.valueOf(killInfo.getLastKilled());
                 statement.setString(1, uuid);
                 statement.setString(2, killedUuid);
                 statement.setInt(3, kills);
-                statement.setString(4, killedUuid);
-                statement.setInt(5, kills);
+                statement.setObject(4, lastKilled);
+                statement.setString(5, killedUuid);
+                statement.setInt(6, kills);
+                statement.setObject(7, lastKilled);
                 statement.addBatch();
             }
             statement.executeBatch();

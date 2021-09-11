@@ -24,32 +24,35 @@
 
 package me.fisher2911.killtracker.user;
 
-import me.fisher2911.killtracker.KillTracker;
+import java.time.LocalDateTime;
 
-import java.util.*;
+public class KillInfo {
 
-public class UserManager {
+    private int kills;
+    private LocalDateTime lastKilled;
 
-    private final KillTracker plugin;
-    private final Map<UUID, User> userMap = new HashMap<>();
-
-    public UserManager(final KillTracker plugin) {
-        this.plugin = plugin;
+    public KillInfo(final int kills, final LocalDateTime lastKilled) {
+        this.kills = kills;
+        this.lastKilled = lastKilled;
     }
 
-    public void addUser(final User user) {
-        this.userMap.put(user.getUuid(), user);
+    public void addKill() {
+        this.kills++;
     }
 
-    public void removeUser(final User user) {
-        this.userMap.remove(user.getUuid());
+    public void setKills(final int kills) {
+        this.kills = kills;
     }
 
-    public Optional<User> getUser(final UUID uuid) {
-        return Optional.ofNullable(this.userMap.get(uuid));
+    public void setLastKilled(final LocalDateTime lastKilled) {
+        this.lastKilled = lastKilled;
     }
 
-    public Map<UUID, User> getUserMap() {
-        return userMap;
+    public int getKills() {
+        return kills;
+    }
+
+    public LocalDateTime getLastKilled() {
+        return lastKilled;
     }
 }

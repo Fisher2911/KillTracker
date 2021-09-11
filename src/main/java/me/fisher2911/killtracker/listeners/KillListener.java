@@ -27,13 +27,17 @@ package me.fisher2911.killtracker.listeners;
 import me.fisher2911.killtracker.KillTracker;
 import me.fisher2911.killtracker.config.Rewards;
 import me.fisher2911.killtracker.config.Settings;
+import me.fisher2911.killtracker.user.KillInfo;
 import me.fisher2911.killtracker.user.User;
 import me.fisher2911.killtracker.user.UserManager;
+import org.bukkit.Location;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -60,6 +64,15 @@ public class KillListener implements Listener {
         final Optional<User> optionalUser = userManager.getUser(uuid);
         optionalUser.ifPresent(user -> {
             if (entity instanceof final Player killedPlayer) {
+                final KillInfo killInfo = user.getPlayerKillInfo(killedPlayer.getUniqueId());
+                final int killDelaySeconds = settings.getDelaySamePlayerKills();
+                final LocalDateTime lastKilled = killInfo.getLastKilled();
+                if (lastKilled != null &&
+                        Duration.between(lastKilled,
+                                        LocalDateTime.now()).
+                                getSeconds() < killDelaySeconds) {
+                    return;
+                }
                 user.addPlayerKill(killedPlayer.getUniqueId());
                 checkPlayerRewards(killedPlayer, user);
                 return;
@@ -97,12 +110,8 @@ public class KillListener implements Listener {
     }
 
     private void checkPlayerRewards(final Player killed, final User killer) {
-        final int playerKilledAmount = killer.getPlayerKillAmount(killed.getUniqueId());
-        final int maxKills = settings.getUniquePlayerKillLimit();
-        if (playerKilledAmount > maxKills) {
-            plugin.debug("Unique Kills Allowed: " + maxKills);
-            return;
-        }
+        final KillInfo killInfo = killer.getPlayerKillInfo(killed.getUniqueId());
+        killInfo.setLastKilled(LocalDateTime.now());
         final int amount = killer.getTotalPlayerKills();
         final Rewards optionalRewards = settings.getPlayerRewards();
         optionalRewards.applyRewards(killer.getOfflinePlayer(), amount);

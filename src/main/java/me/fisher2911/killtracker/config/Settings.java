@@ -51,8 +51,9 @@ public class Settings {
     private Rewards passiveMobsRewards;
     private Rewards neutralMobsRewards;
     private boolean useAllTieredRewards;
-    private int uniquePlayerKillLimit;
+    private int delaySamePlayerKills;
     private boolean sendDebugMessages;
+    private int saveInterval;
 
     public Optional<Rewards> getEntityRewards(final String entity) {
         return Optional.ofNullable(entityRewards.get(entity));
@@ -94,8 +95,9 @@ public class Settings {
         plugin.saveDefaultConfig();
         final ConfigurationSection config = plugin.getConfig();
         this.useAllTieredRewards = config.getBoolean("use-all-tiered-rewards");
-        this.uniquePlayerKillLimit = config.getInt("unique-player-kill-limit");
+        this.delaySamePlayerKills = config.getInt("delay-same-player-kills");
         this.sendDebugMessages = config.getBoolean("send-debug-messages");
+        this.saveInterval = config.getInt("save-interval");
     }
 
     private void loadMobsRewards() {
@@ -321,11 +323,15 @@ public class Settings {
         return useAllTieredRewards;
     }
 
-    public int getUniquePlayerKillLimit() {
-        return uniquePlayerKillLimit;
+    public int getDelaySamePlayerKills() {
+        return delaySamePlayerKills;
     }
 
     public boolean sendDebugMessages() {
         return this.sendDebugMessages;
+    }
+
+    public int getSaveInterval() {
+        return saveInterval;
     }
 }

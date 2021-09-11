@@ -31,6 +31,7 @@ import dev.triumphteam.gui.guis.GuiItem;
 import dev.triumphteam.gui.guis.PaginatedGui;
 import me.fisher2911.killtracker.KillTracker;
 import me.fisher2911.killtracker.placeholder.Placeholder;
+import me.fisher2911.killtracker.user.KillInfo;
 import me.fisher2911.killtracker.user.User;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -81,16 +82,16 @@ public class StatsMenu {
 
     public void openPlayerKillsMenu(final User user) {
         final PaginatedGui gui = getGui(playerKillsInfo, user);
-        final Map<UUID, Integer> playerKills = user.getPlayerKills();
+        final Map<UUID, KillInfo> playerKills = user.getPlayerKills();
         KillTracker.
                 newChain().
                 asyncFirst(() -> {
                     final Map<OfflinePlayer, Integer> offlinePlayerKills = new HashMap<>();
-                    for (final Map.Entry<UUID, Integer> entry : playerKills.entrySet()) {
+                    for (final Map.Entry<UUID, KillInfo> entry : playerKills.entrySet()) {
                         final UUID uuid = entry.getKey();
-                        final int kills = entry.getValue();
+                        final KillInfo killInfo = entry.getValue();
                         final OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
-                        offlinePlayerKills.put(player, kills);
+                        offlinePlayerKills.put(player, killInfo.getKills());
                     }
                     return offlinePlayerKills;
                 }).syncLast(map -> {

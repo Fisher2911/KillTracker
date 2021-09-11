@@ -26,6 +26,7 @@ package me.fisher2911.killtracker.user;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.checkerframework.checker.units.qual.K;
 
 import java.util.Map;
 import java.util.UUID;
@@ -34,9 +35,9 @@ public class User {
 
     private final UUID uuid;
     private final Map<String, Integer> entityKills;
-    private final Map<UUID, Integer> playerKills;
+    private final Map<UUID, KillInfo> playerKills;
 
-    public User(final UUID uuid, final Map<String, Integer> entityKills, final Map<UUID, Integer> playerKills) {
+    public User(final UUID uuid, final Map<String, Integer> entityKills, final Map<UUID, KillInfo> playerKills) {
         this.uuid = uuid;
         this.entityKills = entityKills;
         this.playerKills = playerKills;
@@ -52,8 +53,10 @@ public class User {
     }
 
     public void addPlayerKill(final UUID player) {
-        final int kills = this.playerKills.computeIfAbsent(player, v -> 0) + 1;
-        this.playerKills.put(player, kills);
+        final KillInfo killInfo = this.playerKills.computeIfAbsent(player,
+                v -> new KillInfo(0, null));
+        killInfo.addKill();
+        this.playerKills.put(player, killInfo);
     }
 
     public int getEntityKillAmount(final String entity) {
@@ -61,13 +64,19 @@ public class User {
     }
 
     public int getPlayerKillAmount(final UUID player) {
-        return playerKills.getOrDefault(player, 0);
+        return getPlayerKillInfo(player).getKills();
+    }
+
+    public KillInfo getPlayerKillInfo(final UUID player) {
+        return playerKills.
+                getOrDefault(player,
+                        new KillInfo(0, null));
     }
 
     public int getTotalPlayerKills() {
         int total = 0;
-        for (final int kills : playerKills.values()) {
-            total += kills;
+        for (final KillInfo killInfo : playerKills.values()) {
+            total += killInfo.getKills();
         }
         return total;
     }
@@ -80,7 +89,7 @@ public class User {
         return entityKills;
     }
 
-    public Map<UUID, Integer> getPlayerKills() {
+    public Map<UUID, KillInfo> getPlayerKills() {
         return playerKills;
     }
 }

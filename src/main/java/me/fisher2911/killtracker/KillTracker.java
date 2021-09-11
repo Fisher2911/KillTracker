@@ -41,6 +41,7 @@ import me.mattstudios.mf.base.CommandManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.List;
 import java.util.Optional;
@@ -52,6 +53,7 @@ public class KillTracker extends JavaPlugin {
     private UserManager userManager;
     private Database database;
     private CommandManager commandManager;
+    private BukkitTask saveTask;
 
     private static TaskChainFactory taskChainFactory;
     public static <T> TaskChain<T> newChain() {
@@ -72,12 +74,8 @@ public class KillTracker extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        Bukkit.getOnlinePlayers().
-                forEach(player -> {
-                    final Optional<User> optionalUser = this.userManager.
-                            getUser(player.getUniqueId());
-                    optionalUser.ifPresent(database::saveUser);
-                });
+        this.saveTask.cancel();
+        saveAll();
         database.close();
     }
 
@@ -91,6 +89,19 @@ public class KillTracker extends JavaPlugin {
         this.guiSettings.load();
         this.registerListeners();
         this.registerCommands();
+        startSaveTask();
+    }
+
+    private void startSaveTask() {
+        final int saveInterval = settings.getSaveInterval();
+        this.saveTask = Bukkit.
+                getScheduler().
+                runTaskTimerAsynchronously(this,
+                        this::saveAll, saveInterval, saveInterval );
+    }
+
+    private void saveAll() {
+        userManager.getUserMap().values().forEach(database::saveUser);
     }
 
     private void registerCommands() {

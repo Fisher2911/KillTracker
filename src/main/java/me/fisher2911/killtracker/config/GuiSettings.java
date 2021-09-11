@@ -32,6 +32,7 @@ import me.fisher2911.killtracker.gui.ItemFormat;
 import me.fisher2911.killtracker.gui.StatGuiItem;
 import me.fisher2911.killtracker.gui.StatsMenu;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -184,13 +185,21 @@ public class GuiSettings {
         ItemBuilder builder;
 
         if (material == Material.PLAYER_HEAD) {
-            String texture = section.getString("texture");
-            if (texture == null) {
-                texture = "";
+            final String texture = section.getString("texture");
+            final String playerName = section.getString("player-name");
+            if (texture != null) {
+                builder = ItemBuilder.from(ItemBuilder.
+                        skull().
+                        texture(texture).build());
+            } else if (playerName != null) {
+                builder = ItemBuilder.from(ItemBuilder.
+                        skull().
+                        owner(Bukkit.getOfflinePlayer(playerName)).
+                        build());
+            } else {
+                builder = ItemBuilder.from(material);
             }
-            builder = ItemBuilder.from(ItemBuilder.
-                    skull().
-                    texture(texture).build());
+
         } else {
             builder = ItemBuilder.from(material);
         }

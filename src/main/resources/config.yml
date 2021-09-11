@@ -2,9 +2,11 @@
 # if a player kills a cow and this setting is true, they will also get rewards for
 # passive mobs
 use-all-tiered-rewards: false
-# amount of times a player can kill the same person
-# and still have it count for their kills
-unique-player-kill-limit: 5
+# How much time a player has to wait between  kills
+# of the same player in seconds
+delay-same-player-kills: 30
 # Whether to send debug messages to console,
 # use this when reporting bugs
 send-debug-messages: false
+# How often to save user data in seconds
+save-interval: 300
