@@ -23,6 +23,7 @@ dependencies {
     implementation "net.kyori:adventure-api:4.8.1"
     implementation 'net.kyori:adventure-text-serializer-legacy:4.8.1'
     implementation 'co.aikar:taskchain-bukkit:3.7.2'
+    compileOnly 'org.bstats:bstats-bukkit:2.2.1'
 }
 
 

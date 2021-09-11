@@ -79,13 +79,6 @@ public class KillListener implements Listener {
                 return;
             }
             user.addEntityKill(entity.getType().toString().toUpperCase());
-            String entityGroup = EntityGroup.NEUTRAL.name();
-            if (entity instanceof Monster) {
-                entityGroup = EntityGroup.HOSTILE.toString();
-            } else if (entity instanceof Animals) {
-                entityGroup = EntityGroup.PASSIVE.toString();
-            }
-            user.addEntityKill(entityGroup);
             checkEntityRewards(entity, user);
         });
     }
@@ -103,16 +96,23 @@ public class KillListener implements Listener {
              acceptMoreRewards = settings.useAllTieredRewards();
         }
         if (acceptMoreRewards) {
+            plugin.debug("Accepting more rewards");
+            String entityGroup = EntityGroup.NEUTRAL.toString();
             if (killed instanceof Monster) {
                 rewards = settings.getHostileMobsRewards();
-                amount = killer.getEntityKillAmount(EntityGroup.HOSTILE.toString());
+                entityGroup = EntityGroup.HOSTILE.toString();
+                plugin.debug("Mob is hostile");
             } else if (killed instanceof Animals) {
                 rewards = settings.getPassiveMobsRewards();
-                amount = killer.getEntityKillAmount(EntityGroup.PASSIVE.toString());
+                entityGroup = EntityGroup.PASSIVE.toString();
+                plugin.debug("Mob is passive");
             } else {
                 rewards = settings.getNeutralMobsRewards();
-                amount = killer.getEntityKillAmount(EntityGroup.NEUTRAL.toString());
+                plugin.debug("Mob is neutral");
             }
+            plugin.debug("amount is " + amount);
+            killer.addEntityKill(entityGroup);
+            amount = killer.getEntityKillAmount(entityGroup);
         }
         if (rewards == null) {
             return;

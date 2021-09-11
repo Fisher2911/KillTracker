@@ -38,6 +38,7 @@ import me.fisher2911.killtracker.listeners.PlayerJoinListener;
 import me.fisher2911.killtracker.user.User;
 import me.fisher2911.killtracker.user.UserManager;
 import me.mattstudios.mf.base.CommandManager;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -65,6 +66,8 @@ public class KillTracker extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        int pluginId = 12761;
+        Metrics metrics = new Metrics(this, pluginId);
         load();
         for (final Player player : Bukkit.getOnlinePlayers()) {
             database.loadUser(player.getUniqueId()).
@@ -93,7 +96,7 @@ public class KillTracker extends JavaPlugin {
     }
 
     private void startSaveTask() {
-        final int saveInterval = settings.getSaveInterval();
+        final int saveInterval = Math.max(5, settings.getSaveInterval());
         this.saveTask = Bukkit.
                 getScheduler().
                 runTaskTimerAsynchronously(this,

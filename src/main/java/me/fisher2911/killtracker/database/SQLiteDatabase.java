@@ -64,7 +64,7 @@ public class SQLiteDatabase implements Database {
         return null;
     }
 
-    private static final String USER_TABLE_NAME = "user_kills";
+    private static final String USER_TABLE_NAME = "entity_kills";
     private static final String USER_TABLE_UUID_COLUMN = "uuid";
     private static final String USER_TABLE_ENTITY_COLUMN = "entity";
     private static final String USER_TABLE_KILL_AMOUNT_COLUMN = "kills";
