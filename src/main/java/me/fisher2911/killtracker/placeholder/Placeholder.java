@@ -22,23 +22,36 @@
  * SOFTWARE.
  */
 
-package me.fisher2911.killtracker.config;
+package me.fisher2911.killtracker.placeholder;
 
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
-public class MessageReward implements Reward {
+import java.util.Map;
 
-    private final String message;
+public class Placeholder {
 
-    public MessageReward(final String message) {
-        this.message = message;
-    }
+    public static String PLAYER_PLACEHOLDER = "%player%";
+    public static String KILLS_PLACEHOLDER = "%kills%";
 
-    @Override
-    public void apply(final OfflinePlayer offlinePlayer) {
-        if (offlinePlayer instanceof final Player player) {
-            player.sendMessage(message);
+    public static String addPlaceholders(final Map<String, String> placeholders, final String message) {
+        String replace = message;
+        for (final Map.Entry<String, String> entry : placeholders.entrySet()) {
+            final String key = entry.getKey();
+            final String value = entry.getValue();
+            if (value == null || key == null) {
+                continue;
+            }
+            replace = replace.replace(entry.getKey(), entry.getValue());
         }
+        return replace;
     }
+
+    public static String addPlayerAndKillsPlaceholders(final String message,
+                                                       final OfflinePlayer player,
+                                                       final int kills) {
+        return addPlaceholders(Map.of(PLAYER_PLACEHOLDER, player.getName(),
+                                    KILLS_PLACEHOLDER, String.valueOf(kills)), message);
+    }
+
 }

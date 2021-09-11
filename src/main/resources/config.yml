@@ -4,4 +4,7 @@
 use-all-tiered-rewards: false
 # amount of times a player can kill the same person
 # and still have it count for their kills
-player-kill-farm-limit: 5
+unique-player-kill-limit: 5
+# Whether to send debug messages to console,
+# use this when reporting bugs
+send-debug-messages: false

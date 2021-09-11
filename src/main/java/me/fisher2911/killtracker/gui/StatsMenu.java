@@ -1,3 +1,27 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) fisher2911
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package me.fisher2911.killtracker.gui;
 
 import dev.triumphteam.gui.builder.item.ItemBuilder;
@@ -6,10 +30,12 @@ import dev.triumphteam.gui.guis.Gui;
 import dev.triumphteam.gui.guis.GuiItem;
 import dev.triumphteam.gui.guis.PaginatedGui;
 import me.fisher2911.killtracker.KillTracker;
+import me.fisher2911.killtracker.placeholder.Placeholder;
 import me.fisher2911.killtracker.user.User;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -58,7 +84,7 @@ public class StatsMenu {
         final Map<UUID, Integer> playerKills = user.getPlayerKills();
         KillTracker.
                 newChain().
-                syncFirst(() -> {
+                asyncFirst(() -> {
                     final Map<OfflinePlayer, Integer> offlinePlayerKills = new HashMap<>();
                     for (final Map.Entry<UUID, Integer> entry : playerKills.entrySet()) {
                         final UUID uuid = entry.getKey();
@@ -67,27 +93,41 @@ public class StatsMenu {
                         offlinePlayerKills.put(player, kills);
                     }
                     return offlinePlayerKills;
-                }).syncLast(map -> map.forEach((player, kills) -> {
-                    final String name = ChatColor.
-                            translateAlternateColorCodes('&',
-                                    player.getName() + "'s kills");
-                    final String lore = ChatColor.
-                            translateAlternateColorCodes('&',
-                                    String.valueOf(kills));
-                    final SkullBuilder builder =
-                            ItemBuilder.
-                                    skull().
-                                    owner(player).
-                                    name(Component.text(name)).
-                                    lore(Component.text(""),
-                                            Component.text(lore));
-                    gui.addItem(builder.asGuiItem());
-                }));
-        final Player player = Bukkit.getPlayer(user.getUuid());
-        if (player == null) {
-            return;
-        }
-        gui.open(player);
+                }).syncLast(map -> {
+                    final ItemFormat itemFormat = playerKillsInfo.getItemFormat();
+                    if (itemFormat != null) {
+                        map.forEach((player, kills) -> {
+                            final String name =
+                                    Placeholder.addPlayerAndKillsPlaceholders(
+                                            addColor(itemFormat.getItemNameFormat()),
+                                            player,
+                                            kills);
+                            final List<Component> lore = new ArrayList<>();
+                            for (final String line : itemFormat.getItemLoreFormat()) {
+                                lore.add(
+                                        Component.text(
+                                                Placeholder.addPlayerAndKillsPlaceholders(
+                                                        addColor(line),
+                                                        player,
+                                                        kills)
+                                        )
+                                );
+                            }
+                            final SkullBuilder builder =
+                                    ItemBuilder.
+                                            skull().
+                                            owner(player).
+                                            name(Component.text(name)).
+                                            lore(lore);
+                            gui.addItem(builder.asGuiItem());
+                        });
+                    }
+                    final Player userPlayer = Bukkit.getPlayer(user.getUuid());
+                    if (userPlayer == null) {
+                        return;
+                    }
+                    gui.open(userPlayer);
+                }).execute();
     }
 
     public void openMenu(final User user) {
@@ -96,6 +136,7 @@ public class StatsMenu {
                 title(Component.text(this.mainGuiInfo.getTitle())).
                 rows(this.mainGuiInfo.getRows()).
                 create();
+        gui.setDefaultClickAction(event -> event.setCancelled(true));
         final List<GuiItem> borderItems = this.mainGuiInfo.getBorderItems();
         if (!borderItems.isEmpty()) {
             gui.getFiller().fillBorder(borderItems);
@@ -158,5 +199,9 @@ public class StatsMenu {
         itemMeta.setLore(lore);
         itemStack.setItemMeta(itemMeta);
         return new GuiItem(itemStack);
+    }
+
+    private String addColor(final String string) {
+        return ChatColor.translateAlternateColorCodes('&', string);
     }
 }

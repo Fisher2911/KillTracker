@@ -22,23 +22,25 @@
  * SOFTWARE.
  */
 
-package me.fisher2911.killtracker.config;
+package me.fisher2911.killtracker.gui;
 
-import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
+import java.util.List;
 
-public class MessageReward implements Reward {
+public class ItemFormat {
 
-    private final String message;
+    private final String itemNameFormat;
+    private final List<String> itemLoreFormat;
 
-    public MessageReward(final String message) {
-        this.message = message;
+    public ItemFormat(final String itemNameFormat, final List<String> itemLoreFormat) {
+        this.itemNameFormat = itemNameFormat;
+        this.itemLoreFormat = itemLoreFormat;
     }
 
-    @Override
-    public void apply(final OfflinePlayer offlinePlayer) {
-        if (offlinePlayer instanceof final Player player) {
-            player.sendMessage(message);
-        }
+    public String getItemNameFormat() {
+        return itemNameFormat;
+    }
+
+    public List<String> getItemLoreFormat() {
+        return itemLoreFormat;
     }
 }

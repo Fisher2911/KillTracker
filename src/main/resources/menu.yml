@@ -11,12 +11,12 @@ main-menu:
       name: ' '
       glowing: true
   items:
-    0:
+    10:
       material: PLAYER_HEAD
       amount: 3
       name: Player Stats
       command: stats players
-    1:
+    11:
       material: ROTTEN_FLESH
       amount: 1
       name: Entity Stats
@@ -101,31 +101,8 @@ player-menu:
       material: BLACK_STAINED_GLASS_PANE
       name: ' '
       glowing: true
-  items:
-    0:
-      material: GOLD_BLOCK
-      amount: 3
-      name: test
-      glowing: true
-      type: cow
-      lore:
-        - ' '
-        - '%kills%'
-      item-flags:
-        - HIDE_ENCHANTS
-    1:
-      material: GOLD_INGOT
-      amount: 1
-      name: test2
-      type: pig
-      lore:
-        - ' '
-        - '%kills%'
-    58:
-      material: GOLD_INGOT
-      amount: 1
-      name: test2
-      type: pig
-      lore:
-        - ' '
-        - '%kills%'
+  item-format:
+    name: "&b%player%'s Kills"
+    lore:
+      - ' '
+      - '%kills%'

@@ -1,3 +1,27 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) fisher2911
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package me.fisher2911.killtracker;
 
 import co.aikar.taskchain.BukkitTaskChainFactory;
@@ -28,7 +52,6 @@ public class KillTracker extends JavaPlugin {
     private UserManager userManager;
     private Database database;
     private CommandManager commandManager;
-    private final boolean debug = true;
 
     private static TaskChainFactory taskChainFactory;
     public static <T> TaskChain<T> newChain() {
@@ -64,7 +87,7 @@ public class KillTracker extends JavaPlugin {
         this.guiSettings = new GuiSettings(this);
         this.userManager = new UserManager(this);
         this.database = new SQLiteDatabase(this);
-        this.settings.loadAllRewards();
+        this.settings.load();
         this.guiSettings.load();
         this.registerListeners();
         this.registerCommands();
@@ -104,11 +127,11 @@ public class KillTracker extends JavaPlugin {
     }
 
     public void debug(final String message) {
-        debug(message, this.debug);
+        debug(message, settings.sendDebugMessages());
     }
 
     public void debug(final String message, final boolean send) {
-        if (send && this.debug) {
+        if (send && settings.sendDebugMessages()) {
             this.getLogger().warning("[DEBUG]: " + message);
         }
     }
