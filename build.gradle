@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'me.fisher2911'
-version '1.0-SNAPSHOT'
+version '1.0'
 
 repositories {
     mavenCentral()
@@ -39,7 +39,8 @@ shadowJar {
     relocate 'co.aikar.taskchain', 'me.fisher2911.killtracker.taskchain'
 }
 
-
-//shadowJar {
-//    destinationDirectory.set(file("/server/plugins"))
-//}
+shadowJar {
+    archiveBaseName.set('KillTracker')
+    archiveClassifier.set('')
+    archiveVersion.set('')
+}

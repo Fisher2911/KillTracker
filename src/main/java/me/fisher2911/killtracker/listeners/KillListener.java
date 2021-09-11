@@ -25,6 +25,7 @@
 package me.fisher2911.killtracker.listeners;
 
 import me.fisher2911.killtracker.KillTracker;
+import me.fisher2911.killtracker.config.EntityGroup;
 import me.fisher2911.killtracker.config.Rewards;
 import me.fisher2911.killtracker.config.Settings;
 import me.fisher2911.killtracker.user.KillInfo;
@@ -78,6 +79,13 @@ public class KillListener implements Listener {
                 return;
             }
             user.addEntityKill(entity.getType().toString().toUpperCase());
+            String entityGroup = EntityGroup.NEUTRAL.name();
+            if (entity instanceof Monster) {
+                entityGroup = EntityGroup.HOSTILE.toString();
+            } else if (entity instanceof Animals) {
+                entityGroup = EntityGroup.PASSIVE.toString();
+            }
+            user.addEntityKill(entityGroup);
             checkEntityRewards(entity, user);
         });
     }
@@ -85,7 +93,7 @@ public class KillListener implements Listener {
     private void checkEntityRewards(final Entity killed, final User killer) {
         plugin.debug("Checking entity rewards");
         final String entityType = killed.getType().toString();
-        final int amount = killer.getEntityKillAmount(entityType);
+        int amount = killer.getEntityKillAmount(entityType);
         final Optional<Rewards> optionalRewards = settings.getEntityRewards(entityType);
         Rewards rewards = null;
         boolean acceptMoreRewards = true;
@@ -97,10 +105,13 @@ public class KillListener implements Listener {
         if (acceptMoreRewards) {
             if (killed instanceof Monster) {
                 rewards = settings.getHostileMobsRewards();
+                amount = killer.getEntityKillAmount(EntityGroup.HOSTILE.toString());
             } else if (killed instanceof Animals) {
                 rewards = settings.getPassiveMobsRewards();
+                amount = killer.getEntityKillAmount(EntityGroup.PASSIVE.toString());
             } else {
                 rewards = settings.getNeutralMobsRewards();
+                amount = killer.getEntityKillAmount(EntityGroup.NEUTRAL.toString());
             }
         }
         if (rewards == null) {

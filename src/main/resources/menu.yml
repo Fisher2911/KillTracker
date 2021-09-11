@@ -15,12 +15,12 @@ main-menu:
       material: PLAYER_HEAD
       amount: 3
       name: Player Stats
-      command: stats players
+      command: killtracker players
     11:
       material: ROTTEN_FLESH
       amount: 1
       name: Entity Stats
-      command: stats entities
+      command: killtracker mobs
 entity-menu:
   rows: 6
   title: Entity Kills
