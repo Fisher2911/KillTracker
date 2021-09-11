@@ -66,7 +66,7 @@ public class KillTrackerCommand extends CommandBase {
         });
     }
 
-    @SubCommand("entities")
+    @SubCommand("mobs")
     @Permission("killtracker.menu")
     public void onEntityKillsCommand(final Player player) {
         final Optional<User> optionalUser = this.userManager.getUser(player.getUniqueId());
