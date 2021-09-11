@@ -172,8 +172,6 @@ public class StatsMenu {
         gui.setItem(nextPageSlot, info.getNextPageItem());
         final GuiItem previousMenuItem = info.getPreviousMenuItem();
         if (previousMenuItem != null) {
-            System.out.println("Previous Menu Item: " +
-                    previousMenuItem.getItemStack());
             final int previousMenuSlot = inventorySize - 5;
             gui.setItem(previousMenuSlot, previousMenuItem);
             previousMenuItem.setAction(event -> openMenu(user));
