@@ -1,6 +1,6 @@
 name: KillTracker
 main: me.fisher2911.killtracker.KillTracker
-version: 1.1.0
+version: 1.0.2
 author: fisher2911
 api-version: 1.17
 softdepend:
