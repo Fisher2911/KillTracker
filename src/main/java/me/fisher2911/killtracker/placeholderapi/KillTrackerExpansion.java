@@ -29,6 +29,8 @@ import me.fisher2911.killtracker.KillTracker;
 import me.fisher2911.killtracker.database.Database;
 import me.fisher2911.killtracker.user.User;
 import me.fisher2911.killtracker.user.UserManager;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -123,25 +125,26 @@ public class KillTrackerExpansion extends PlaceholderExpansion {
     public String onPlaceholderRequest(Player player, @NotNull String identifier){
         final UserManager userManager = plugin.getUserManager();
         if (player == null) {
-            return "0";
+            return "";
         }
         final Optional<User> optional = userManager.getUser(player.getUniqueId());
 
         if (optional.isEmpty()) {
-            return "0";
+            return "";
         }
         final User user = optional.get();
         final String[] splitData = identifier.split("_");
         if (splitData.length < 2) {
-            return "0";
+            return "";
         }
-        final String data = splitData[2];
-        if (identifier.startsWith("entitykills")) {
-            return String.valueOf(user.getEntityKillAmount(data));
+        final String data = splitData[1];
+        if (identifier.startsWith("mobkills")) {
+            return String.valueOf(user.getEntityKillAmount(data.toUpperCase()));
         }
 
         if (identifier.startsWith("playerkills")) {
-            return String.valueOf(user.getPlayerKillAmount(UUID.fromString(data)));
+            final OfflinePlayer placeholderPlayer = Bukkit.getOfflinePlayer(data);
+            return String.valueOf(user.getPlayerKillAmount(placeholderPlayer.getUniqueId()));
         }
         // We return null if an invalid placeholder (f.e. %someplugin_placeholder3%)
         // was provided

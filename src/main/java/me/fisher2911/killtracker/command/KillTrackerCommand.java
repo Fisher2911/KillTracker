@@ -25,6 +25,7 @@
 package me.fisher2911.killtracker.command;
 
 
+import me.clip.placeholderapi.PlaceholderAPI;
 import me.fisher2911.killtracker.KillTracker;
 import me.fisher2911.killtracker.gui.StatsMenu;
 import me.fisher2911.killtracker.user.User;
