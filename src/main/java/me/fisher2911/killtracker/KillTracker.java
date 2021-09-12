@@ -35,6 +35,7 @@ import me.fisher2911.killtracker.database.SQLiteDatabase;
 import me.fisher2911.killtracker.gui.StatsMenu;
 import me.fisher2911.killtracker.listeners.KillListener;
 import me.fisher2911.killtracker.listeners.PlayerJoinListener;
+import me.fisher2911.killtracker.placeholderapi.KillTrackerExpansion;
 import me.fisher2911.killtracker.user.User;
 import me.fisher2911.killtracker.user.UserManager;
 import me.mattstudios.mf.base.CommandManager;
@@ -73,6 +74,7 @@ public class KillTracker extends JavaPlugin {
             database.loadUser(player.getUniqueId()).
                     ifPresent(userManager::addUser);
         }
+        registerExpansions();
     }
 
     @Override
@@ -118,6 +120,12 @@ public class KillTracker extends JavaPlugin {
                 forEach(listener -> this.getServer().
                         getPluginManager().
                         registerEvents(listener, this));
+    }
+
+    private void registerExpansions() {
+        if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            new KillTrackerExpansion(this).register();
+        }
     }
 
     public void sendError(final String error) {
