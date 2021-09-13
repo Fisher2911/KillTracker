@@ -21,6 +21,7 @@ import me.fisher2911.killtracker.user.UserManager;
 import org.bukkit.Location;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 
@@ -41,7 +42,7 @@ public class KillListener implements Listener {
         this.userManager = plugin.getUserManager();
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onEntityDeath(final EntityDeathEvent event) {
         final LivingEntity entity = event.getEntity();
         final Player player = entity.getKiller();
