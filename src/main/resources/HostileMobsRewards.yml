@@ -1,31 +1,39 @@
-# Number of kills
-kills:
-  1:
-    # Rewards
-    1:
-      # reward type
-      type: command
-      command: give %player% diamond
-    2:
-      type: message
-      message: You have killed 10 hostile mobs!
-    3:
-      type: items
-      items:
-        DIAMOND: 64
-        IRON_SWORD: 1
-# applies every x kills
-milestones:
-  5:
-    1:
-      # reward type
-      type: command
-      command: effect give %player% regeneration 10 10
-    2:
-      type: message
-      message: '&3You have completed a milestone!'
-    3:
-      type: items
-      items:
-        EMERALD: 3
-        BEDROCK: 1
+## Number of kills
+#kills:
+#  1:
+#    # Rewards
+#    1:
+#      # reward type
+#      type: command
+#      command: give %player% diamond
+#    2:
+#      type: message
+#      message: You have killed 10 hostile mobs!
+#    3:
+#      type: items
+#      items:
+#        DIAMOND: 64
+#        IRON_SWORD: 1
+#    4:
+#      type: head
+#      # random texture
+#      texture: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGE3MTI5ZmY4OWNmZDI1MTNiZDdjODk3YzNkNmE0YjJjMWIyZDk5Y2NmOTI2NmFlZDVhZjY0NmY3ZDk2M2VlOCJ9fX0=
+#      item-name: "%name%'s head"
+#      lore:
+#        - ' '
+#        - "%name%'s kills"
+## applies every x kills
+#milestones:
+#  5:
+#    1:
+#      # reward type
+#      type: command
+#      command: effect give %player% regeneration 10 10
+#    2:
+#      type: message
+#      message: '&3You have completed a milestone!'
+#    3:
+#      type: items
+#      items:
+#        EMERALD: 3
+#        BEDROCK: 1

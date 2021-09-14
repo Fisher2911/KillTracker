@@ -32,6 +32,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -134,6 +135,7 @@ public class KillTracker extends JavaPlugin {
     public StatsMenu getStatsMenu() {
         return guiSettings.getStatsMenu();
     }
+
 
     public void debug(final String message) {
         debug(message, settings.sendDebugMessages());

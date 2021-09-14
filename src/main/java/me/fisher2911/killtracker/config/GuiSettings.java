@@ -45,7 +45,7 @@ public class GuiSettings {
     private StatsMenu statsMenu;
 
     public void load() {
-        final File file = getFile("menu.yml");
+        final File file = FileUtil.getFile("menu.yml", plugin);
         plugin.debug(String.valueOf(file.exists()));
         final ConfigurationSection config = YamlConfiguration.loadConfiguration(file);
         final ConfigurationSection mainGuiInfoSection = config.getConfigurationSection("main-menu");
@@ -136,14 +136,6 @@ public class GuiSettings {
         }
         return new GuiInfo(title, itemMap, borderItems, rows,
                 previousPageItem, nextPageItem, previousMenuItem, itemFormat);
-    }
-    
-    private File getFile(final String name) {
-        final File file = new File(plugin.getDataFolder(), name);
-        if (!file.exists()) {
-            plugin.saveResource(name, false);
-        }
-        return file;
     }
 
     public StatsMenu getStatsMenu() {

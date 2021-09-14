@@ -9,14 +9,15 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.fisher2911.killtracker.config;
+package me.fisher2911.killtracker.reward;
 
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Entity;
 
 import java.util.UUID;
 
 public interface Reward {
 
-    void apply(final OfflinePlayer player);
+    void apply(final OfflinePlayer player, final Entity killedEntity);
 
 }

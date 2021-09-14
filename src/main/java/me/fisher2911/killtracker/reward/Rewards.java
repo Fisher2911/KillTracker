@@ -9,12 +9,14 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.fisher2911.killtracker.config;
+package me.fisher2911.killtracker.reward;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import me.fisher2911.killtracker.KillTracker;
+import me.fisher2911.killtracker.config.Settings;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Entity;
 
 import java.util.Collection;
 import java.util.List;
@@ -63,16 +65,16 @@ public class Rewards {
         }
     }
 
-    public void applyRewards(final OfflinePlayer player, final int amount) {
+    public void applyRewards(final OfflinePlayer player, final Entity killedEntity, final int amount) {
         final Collection<Reward> rewardList = this.rewards.get(amount);
         plugin.debug("Rewards Total: " + rewardList);
         plugin.debug("Amount: " + amount);
         if (rewardList != null) {
-            rewardList.forEach(reward -> reward.apply(player));
+            rewardList.forEach(reward -> reward.apply(player, killedEntity));
         }
         rewardAtMilestone.forEach((milestone, reward) -> {
             if (amount % milestone == 0) {
-                reward.apply(player);
+                reward.apply(player, killedEntity);
             }
         });
     }

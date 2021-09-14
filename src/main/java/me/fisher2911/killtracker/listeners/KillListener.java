@@ -13,12 +13,11 @@ package me.fisher2911.killtracker.listeners;
 
 import me.fisher2911.killtracker.KillTracker;
 import me.fisher2911.killtracker.config.EntityGroup;
-import me.fisher2911.killtracker.config.Rewards;
+import me.fisher2911.killtracker.reward.Rewards;
 import me.fisher2911.killtracker.config.Settings;
 import me.fisher2911.killtracker.user.KillInfo;
 import me.fisher2911.killtracker.user.User;
 import me.fisher2911.killtracker.user.UserManager;
-import org.bukkit.Location;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -105,7 +104,7 @@ public class KillListener implements Listener {
         if (rewards == null) {
             return;
         }
-        rewards.applyRewards(killer.getOfflinePlayer(), amount);
+        rewards.applyRewards(killer.getOfflinePlayer(), killed, amount);
     }
 
     private void checkPlayerRewards(final Player killed, final User killer) {
@@ -113,6 +112,6 @@ public class KillListener implements Listener {
         killInfo.setLastKilled(LocalDateTime.now());
         final int amount = killer.getTotalPlayerKills();
         final Rewards optionalRewards = settings.getPlayerRewards();
-        optionalRewards.applyRewards(killer.getOfflinePlayer(), amount);
+        optionalRewards.applyRewards(killer.getOfflinePlayer(), killed, amount);
     }
 }

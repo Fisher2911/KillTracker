@@ -9,11 +9,12 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.fisher2911.killtracker.config;
+package me.fisher2911.killtracker.reward;
 
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -29,7 +30,7 @@ public class ItemsReward implements Reward {
     }
 
     @Override
-    public void apply(final OfflinePlayer offlinePlayer) {
+    public void apply(final OfflinePlayer offlinePlayer, final Entity killedEntity) {
         if (!(offlinePlayer instanceof final Player player)) {
             return;
         }

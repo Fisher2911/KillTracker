@@ -12,6 +12,7 @@
 package me.fisher2911.killtracker.config;
 
 import me.fisher2911.killtracker.KillTracker;
+import me.fisher2911.killtracker.reward.*;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -114,7 +115,7 @@ public class Settings {
 
     private void loadPlayerRewards() {
         final String fileName = "PlayerRewards.yml";
-        final File file = getFile(fileName);
+        final File file = FileUtil.getFile(fileName, plugin);
         if (!file.exists()) {
             return;
         }
@@ -123,7 +124,7 @@ public class Settings {
 
     private void loadHostileMobRewards() {
         final String fileName = "HostileMobsRewards.yml";
-        final File file = getFile(fileName);
+        final File file = FileUtil.getFile(fileName, plugin);
         if (!file.exists()) {
             return;
         }
@@ -132,7 +133,7 @@ public class Settings {
 
     private void loadPassiveMobRewards() {
         final String fileName = "PassiveMobsRewards.yml";
-        final File file = getFile(fileName);
+        final File file = FileUtil.getFile(fileName, plugin);
         if (!file.exists()) {
             return;
         }
@@ -141,19 +142,11 @@ public class Settings {
 
     private void loadNeutralMobsRewards() {
         final String fileName = "NeutralMobsRewards.yml";
-        final File file = getFile(fileName);
+        final File file = FileUtil.getFile(fileName, plugin);
         if (!file.exists()) {
             return;
         }
         this.neutralMobsRewards = loadRewards(file);
-    }
-
-    private File getFile(final String name) {
-        final File file = new File(dataFolder, name);
-        if (!file.exists()) {
-            plugin.saveResource(name, false);
-        }
-        return file;
     }
 
     private Rewards loadRewards(final File file) {
@@ -245,6 +238,7 @@ public class Settings {
     private static final String COMMAND_REWARD = "COMMAND";
     private static final String MESSAGE_REWARD = "MESSAGE";
     private static final String ITEMS_REWARD = "ITEMS";
+    private static final String HEAD_REWARD = "HEAD";
 
     private Reward loadRewardFromType(final String type, final String fileName,
                                       final ConfigurationSection section) throws IllegalArgumentException {
@@ -252,17 +246,17 @@ public class Settings {
             case COMMAND_REWARD -> loadCommandReward(fileName, section);
             case MESSAGE_REWARD -> loadMessageReward(fileName, section);
             case ITEMS_REWARD -> loadItemsReward(fileName, section);
+            case HEAD_REWARD -> loadHeadReward(fileName, section);
             default -> throw new IllegalArgumentException(type + " is not a valid reward type!");
         };
     }
 
     private Reward loadCommandReward(final String fileName, final ConfigurationSection section) {
         final String command = section.getString("command");
-        if (command == null) {
-            plugin.sendError("Command is null in file " +
-                    fileName +
-                    " at section " +
-                    section.getCurrentPath());
+        if (checkNull(command, "Command is null in file " +
+                fileName +
+                " at section " +
+                section.getCurrentPath())) {
             return null;
         }
         return new CommandReward(command);
@@ -270,24 +264,23 @@ public class Settings {
 
     private Reward loadMessageReward(final String fileName, final ConfigurationSection section) {
         final String message = section.getString("message");
-        if (message == null) {
-            plugin.sendError("Message is null in file " +
-                    fileName +
-                    " at section " +
-                    section.getCurrentPath());
+        if (checkNull(message, "Message is null in file " +
+                fileName +
+                " at section " +
+                section.getCurrentPath())) {
             return null;
         }
         plugin.debug("Message is: " + message, false);
         return new MessageReward(ChatColor.translateAlternateColorCodes('&', message));
     }
 
+
     private Reward loadItemsReward(final String fileName, final ConfigurationSection section) {
         final ConfigurationSection itemsSection = section.getConfigurationSection("items");
-        if (itemsSection == null) {
-            plugin.sendError("No items found in file " +
-                    fileName +
-                    " at section " +
-                    section.getCurrentPath());
+        if (checkNull(itemsSection, "No items found in file " +
+                fileName +
+                " at section " +
+                section.getCurrentPath())) {
             return null;
         }
         final Set<ItemStack> itemRewards = new HashSet<>();
@@ -303,6 +296,28 @@ public class Settings {
             itemRewards.add(itemLoader.loadItem(itemSection).getItemStack());
         }
         return new ItemsReward(itemRewards);
+    }
+
+    private Reward loadHeadReward(final String fileName, final ConfigurationSection section) {
+        final String texture = returnOtherIfNull(section.getString("texture"), " ");
+        final String itemName = returnOtherIfNull(section.getString("item-name"), " ");
+        final List<String> lore = section.getStringList("lore");
+        return new HeadReward(new HeadInfo(texture, itemName, lore));
+    }
+
+    private <T> T returnOtherIfNull(final T checked, T returnObject) {
+        if (checked == null) {
+            return returnObject;
+        }
+        return checked;
+    }
+
+    private boolean checkNull(final Object object, final String errorMessage) {
+        if (object == null) {
+            plugin.sendError(errorMessage);
+            return true;
+        }
+        return false;
     }
 
     public boolean useAllTieredRewards() {

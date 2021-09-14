@@ -9,25 +9,24 @@
  * You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.fisher2911.killtracker.config;
+package me.fisher2911.killtracker.reward;
 
-import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 
-public class CommandReward implements Reward {
+public class MessageReward implements Reward {
 
-    private final String command;
+    private final String message;
 
-    public CommandReward(final String command) {
-        this.command = command;
+    public MessageReward(final String message) {
+        this.message = message;
     }
 
     @Override
-    public void apply(final OfflinePlayer player) {
-        final String playerName = player.getName();
-        if (playerName == null) {
-            return;
+    public void apply(final OfflinePlayer offlinePlayer, final Entity entity) {
+        if (offlinePlayer instanceof final Player player) {
+            player.sendMessage(message);
         }
-        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command.replace("%player%", playerName));
     }
 }

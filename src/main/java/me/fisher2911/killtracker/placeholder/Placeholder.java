@@ -12,6 +12,7 @@
 package me.fisher2911.killtracker.placeholder;
 
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import java.util.Map;
@@ -20,6 +21,7 @@ public class Placeholder {
 
     public static String PLAYER_PLACEHOLDER = "%player%";
     public static String KILLS_PLACEHOLDER = "%kills%";
+    public static final String NAME_PLACEHOLDER = "%name%";
 
     public static String addPlaceholders(final Map<String, String> placeholders, final String message) {
         String replace = message;
@@ -32,6 +34,15 @@ public class Placeholder {
             replace = replace.replace(entry.getKey(), entry.getValue());
         }
         return replace;
+    }
+
+    public static String addNamePlaceholders(final String message, final String name) {
+        return message.replace(NAME_PLACEHOLDER, name);
+    }
+
+
+    public static String addPlayerPlaceholders(final String message, final Player player) {
+        return message.replace(PLAYER_PLACEHOLDER, player.getName());
     }
 
     public static String addPlayerAndKillsPlaceholders(final String message,

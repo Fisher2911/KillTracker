@@ -11,21 +11,18 @@
 
 package me.fisher2911.killtracker.config;
 
-import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
+import me.fisher2911.killtracker.KillTracker;
 
-public class MessageReward implements Reward {
+import java.io.File;
 
-    private final String message;
+public class FileUtil {
 
-    public MessageReward(final String message) {
-        this.message = message;
-    }
-
-    @Override
-    public void apply(final OfflinePlayer offlinePlayer) {
-        if (offlinePlayer instanceof final Player player) {
-            player.sendMessage(message);
+    public static File getFile(final String name, final KillTracker plugin) {
+        final File file = new File(plugin.getDataFolder(), name);
+        if (!file.exists()) {
+            plugin.saveResource(name, false);
         }
+        return file;
     }
+
 }
