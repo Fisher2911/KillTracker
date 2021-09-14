@@ -12,8 +12,10 @@
 #    3:
 #      type: items
 #      items:
-#        DIAMOND: 64
-#        IRON_SWORD: 1
+#        DIAMOND:
+#          amount: 64
+#        IRON_SWORD:
+#          amount: 1
 #    4:
 #      type: head
 #      # random texture
@@ -35,5 +37,7 @@
 #    3:
 #      type: items
 #      items:
-#        EMERALD: 3
-#        BEDROCK: 1
+#        EMERALD:
+#          amount: 3
+#        BEDROCK:
+#          amount: 1

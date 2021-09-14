@@ -55,12 +55,12 @@ public class ItemLoader {
         final String materialString = section.getString("material");
         if (materialString == null) {
             plugin.sendError("Material not found in section " +
-                    section.getCurrentPath() + " in menu.yml");
+                    section.getCurrentPath());
             return AIR;
         }
         final Material material = Material.matchMaterial(materialString);
         if (material == null) {
-            plugin.sendError(materialString + " is not a valid material in menu.yml");
+            plugin.sendError(materialString + " is not a valid material");
             return AIR;
         }
         final boolean glowing = section.getBoolean("glowing");
@@ -72,7 +72,7 @@ public class ItemLoader {
             try {
                 itemFlags.add(ItemFlag.valueOf(flag));
             } catch (final IllegalArgumentException exception) {
-                plugin.sendError(flag + " is not a valid item flag in menu.yml");
+                plugin.sendError(flag + " is not a valid item flag");
             }
         });
         ItemBuilder builder;
