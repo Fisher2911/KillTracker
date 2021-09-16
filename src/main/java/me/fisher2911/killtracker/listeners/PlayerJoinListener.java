@@ -72,9 +72,7 @@ public class PlayerJoinListener implements Listener {
             return;
         }
         new UpdateChecker(this.plugin, 96148).getVersion(version -> {
-            if (this.plugin.getDescription().getVersion().equalsIgnoreCase(version)) {
-                player.sendMessage(Message.NO_UPDATE_MESSAGE);
-            } else {
+            if (!this.plugin.getDescription().getVersion().equalsIgnoreCase(version)) {
                 player.sendMessage(Message.YES_UPDATE_MESSAGE.replace("%version%", version));
             }
         });
