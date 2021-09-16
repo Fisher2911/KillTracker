@@ -14,11 +14,12 @@ package me.fisher2911.killtracker.user;
 import me.fisher2911.killtracker.KillTracker;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class UserManager {
 
     private final KillTracker plugin;
-    private final Map<UUID, User> userMap = new HashMap<>();
+    private final Map<UUID, User> userMap = new ConcurrentHashMap<>();
 
     public UserManager(final KillTracker plugin) {
         this.plugin = plugin;

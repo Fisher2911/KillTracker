@@ -14,6 +14,8 @@ package me.fisher2911.killtracker.listeners;
 import me.fisher2911.killtracker.KillTracker;
 import me.fisher2911.killtracker.config.Settings;
 import me.fisher2911.killtracker.database.Database;
+import me.fisher2911.killtracker.message.Message;
+import me.fisher2911.killtracker.updatechecker.UpdateChecker;
 import me.fisher2911.killtracker.user.User;
 import me.fisher2911.killtracker.user.UserManager;
 import org.bukkit.Bukkit;
@@ -48,6 +50,7 @@ public class PlayerJoinListener implements Listener {
             final Optional<User> optionalUser = database.loadUser(uuid);
             optionalUser.ifPresent(userManager::addUser);
         });
+        sendUpdateMessage(player);
     }
 
     @EventHandler
@@ -61,6 +64,19 @@ public class PlayerJoinListener implements Listener {
                     getScheduler().
                     runTaskAsynchronously(plugin,
                             () -> database.saveUser(user));
+        });
+    }
+
+    private void sendUpdateMessage(final Player player) {
+        if (!player.isOp()) {
+            return;
+        }
+        new UpdateChecker(this.plugin, 96148).getVersion(version -> {
+            if (this.plugin.getDescription().getVersion().equalsIgnoreCase(version)) {
+                player.sendMessage(Message.NO_UPDATE_MESSAGE);
+            } else {
+                player.sendMessage(Message.YES_UPDATE_MESSAGE.replace("%version%", version));
+            }
         });
     }
 }
