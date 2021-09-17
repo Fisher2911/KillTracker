@@ -77,8 +77,8 @@ public class KillTracker extends JavaPlugin {
         this.settings = new Settings(this);
         this.guiSettings = new GuiSettings(this);
         this.userManager = new UserManager(this);
-        this.database = new SQLiteDatabase(this);
         this.settings.load();
+        this.database = new SQLiteDatabase(this);
         this.guiSettings.load();
         this.registerListeners();
         this.registerCommands();

@@ -21,6 +21,10 @@ public class FileUtil {
         final File file = new File(plugin.getDataFolder(), name);
         if (!file.exists()) {
             plugin.saveResource(name, false);
+            plugin.debug("File " + file.getPath() + " does not exist, trying to load it...");
+            if (!file.exists()) {
+                plugin.debug("File " + file.getPath() + " was still not able to be loaded");
+            }
         }
         return file;
     }
