@@ -106,8 +106,7 @@ public class Settings {
             }
             final String name = file.
                     getName().
-                    replace(".yml", "").
-                    toUpperCase();
+                    replace(".yml", "");
             final Rewards rewards = loadRewards(file);
             this.entityRewards.put(name, rewards);
         }
@@ -285,12 +284,16 @@ public class Settings {
         }
         final Set<ItemStack> itemRewards = new HashSet<>();
         for (final String item : itemsSection.getKeys(false)) {
-            final ConfigurationSection itemSection = itemsSection.getConfigurationSection(item);
-            if (itemSection == null) {
+            final ConfigurationSection materialSection = itemsSection.getConfigurationSection(item);
+            if (materialSection == null) {
                 final Material material = Material.matchMaterial(item);
                 if (material != null) {
                     itemRewards.add(new ItemStack(material));
                 }
+                continue;
+            }
+            final ConfigurationSection itemSection = materialSection.getConfigurationSection(item);
+            if (itemSection == null) {
                 continue;
             }
             itemRewards.add(itemLoader.loadItem(itemSection).getItemStack());

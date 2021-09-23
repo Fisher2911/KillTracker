@@ -38,6 +38,7 @@ import java.util.Optional;
 
 public class KillTracker extends JavaPlugin {
 
+    private boolean mythicMobsEnabled = false;
     private Settings settings;
     private GuiSettings guiSettings;
     private UserManager userManager;
@@ -83,6 +84,13 @@ public class KillTracker extends JavaPlugin {
         this.registerListeners();
         this.registerCommands();
         startSaveTask();
+        loadMythicMobs();
+    }
+
+    private void loadMythicMobs() {
+        if (Bukkit.getPluginManager().getPlugin("MythicMobs") != null) {
+            this.mythicMobsEnabled = true;
+        }
     }
 
     private void startSaveTask() {
@@ -136,6 +144,9 @@ public class KillTracker extends JavaPlugin {
         return guiSettings.getStatsMenu();
     }
 
+    public boolean isMythicMobsEnabled() {
+        return mythicMobsEnabled;
+    }
 
     public void debug(final String message) {
         debug(message, settings.sendDebugMessages());

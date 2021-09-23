@@ -112,7 +112,7 @@ public class ItemLoader {
         final String command = section.getString("command");
         final GuiItem guiItem;
         if (entityType != null) {
-            guiItem = new StatGuiItem(builder.asGuiItem(), entityType.toUpperCase());
+            guiItem = new StatGuiItem(builder.asGuiItem(), entityType);
         } else {
             guiItem = builder.asGuiItem();
         }

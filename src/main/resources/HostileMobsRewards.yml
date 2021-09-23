@@ -12,9 +12,11 @@
 #    3:
 #      type: items
 #      items:
-#        DIAMOND:
+#        1:
+#          material: DIAMOND
 #          amount: 64
-#        IRON_SWORD:
+#        2:
+#          material: IRON_SWORD
 #          amount: 1
 #    4:
 #      type: head
@@ -37,7 +39,9 @@
 #    3:
 #      type: items
 #      items:
-#        EMERALD:
+#        1:
+#          material: EMERALD
 #          amount: 3
-#        BEDROCK:
+#        2:
+#          material: BEDROCK
 #          amount: 1

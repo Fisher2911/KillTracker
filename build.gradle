@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'me.fisher2911'
-version '1.0.6'
+version '1.0.8'
 
 repositories {
     mavenCentral()
@@ -12,6 +12,7 @@ repositories {
     maven { url = "https://repo.mattstudios.me/artifactory/public/" }
     maven { url = 'https://repo.aikar.co/content/groups/aikar/' }
     maven { url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/' }
+    maven { url "https://mvn.lumine.io/repository/maven-public" }
 }
 
 dependencies {
@@ -26,6 +27,7 @@ dependencies {
     implementation 'net.kyori:adventure-text-serializer-legacy:4.8.1'
     implementation 'co.aikar:taskchain-bukkit:3.7.2'
     implementation 'org.bstats:bstats-bukkit:2.2.1'
+    compileOnly 'io.lumine.xikage:MythicMobs:4.11.0-SNAPSHOT'
 }
 
 

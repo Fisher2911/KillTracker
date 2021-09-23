@@ -36,5 +36,15 @@
       <option name="name" value="maven4" />
       <option name="url" value="https://repo.extendedclip.com/content/repositories/placeholderapi/" />
     </remote-repository>
+    <remote-repository>
+      <option name="id" value="maven5" />
+      <option name="name" value="maven5" />
+      <option name="url" value="https://mvn.lumine.io/repository/maven-public" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="sonatype-oss-snapshots" />
+      <option name="name" value="sonatype-oss-snapshots" />
+      <option name="url" value="https://oss.sonatype.org/content/repositories/snapshots/" />
+    </remote-repository>
   </component>
 </project>

@@ -18,6 +18,7 @@ import me.fisher2911.killtracker.config.Settings;
 import me.fisher2911.killtracker.user.KillInfo;
 import me.fisher2911.killtracker.user.User;
 import me.fisher2911.killtracker.user.UserManager;
+import me.fisher2911.killtracker.util.MobUtil;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -65,14 +66,18 @@ public class KillListener implements Listener {
                 checkPlayerRewards(killedPlayer, user);
                 return;
             }
-            user.addEntityKill(entity.getType().toString().toUpperCase());
-            checkEntityRewards(entity, user);
+            final Optional<String> entityTypeOptional = MobUtil.getMobType(entity);
+            if (entityTypeOptional.isEmpty()) {
+                return;
+            }
+            final String entityType = entityTypeOptional.get();
+            user.addEntityKill(entityTypeOptional.get());
+            checkEntityRewards(entityType, user, entity);
         });
     }
 
-    private void checkEntityRewards(final Entity killed, final User killer) {
+    private void checkEntityRewards(final String entityType, final User killer, final Entity killed) {
         plugin.debug("Checking entity rewards");
-        final String entityType = killed.getType().toString();
         int amount = killer.getEntityKillAmount(entityType);
         final Optional<Rewards> optionalRewards = settings.getEntityRewards(entityType);
         Rewards rewards = null;

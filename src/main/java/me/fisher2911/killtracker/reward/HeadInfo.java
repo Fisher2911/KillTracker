@@ -15,6 +15,8 @@ import dev.triumphteam.gui.builder.item.ItemBuilder;
 import dev.triumphteam.gui.builder.item.SkullBuilder;
 import me.fisher2911.killtracker.KillTracker;
 import me.fisher2911.killtracker.placeholder.Placeholder;
+import me.fisher2911.killtracker.util.MobUtil;
+import me.fisher2911.killtracker.util.MythicMobs;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -24,6 +26,8 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.regex.Matcher;
 
 public class HeadInfo {
 
@@ -76,7 +80,16 @@ public class HeadInfo {
     }
 
     private String cleanupEntityName(final Entity entity) {
-        final String[] parts = entity.getType().toString().toLowerCase().split("_");
+        final Optional<String> entityTypeOptional = MobUtil.getMobType(entity);
+        if (entityTypeOptional.isPresent() && MobUtil.isMythicMob(entity)) {
+            String result = entityTypeOptional.get().replaceAll("(?<!_)(?=[A-Z])", " ");
+            if (result.startsWith(" ")) {
+                result = result.substring(1);
+            }
+            return result;
+        }
+        final String entityType = entity.getType().toString();
+        final String[] parts = entityType.toLowerCase().split("_");
         final StringBuilder builder = new StringBuilder();
         for (int i = 0; i < parts.length; i++) {
             final String part = parts[i];

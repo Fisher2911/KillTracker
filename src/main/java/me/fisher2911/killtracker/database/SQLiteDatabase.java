@@ -15,6 +15,8 @@ import me.fisher2911.killtracker.KillTracker;
 import me.fisher2911.killtracker.user.KillInfo;
 import me.fisher2911.killtracker.user.User;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 import org.checkerframework.checker.units.qual.K;
 
 import java.io.File;
@@ -207,7 +209,6 @@ public class SQLiteDatabase implements Database {
         return killsMap;
     }
 
-    // todo
     @Override
     public void saveUser(final User user) {
         saveUserEntityKills(user);
