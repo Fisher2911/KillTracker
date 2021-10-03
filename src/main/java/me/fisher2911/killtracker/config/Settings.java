@@ -43,6 +43,9 @@ public class Settings {
     private final SetMultimap<String, EntityGroup> entityGroups = HashMultimap.create();
     private final Map<EntityGroup, Rewards> entityGroupRewards = new HashMap<>();
     private Rewards playerRewards;
+    private Rewards passiveMobRewards;
+    private Rewards hostileMobRewards;
+    private Rewards neutralMobRewards;
     private boolean useAllTieredRewards;
     private int delaySamePlayerKills;
     private boolean sendDebugMessages;
@@ -60,28 +63,33 @@ public class Settings {
         return playerRewards;
     }
 
-    public Optional<Rewards> getHostileMobsRewards() {
-        return this.getEntityGroupRewards(DefaultEntityGroups.HOSTILE);
+    public Rewards getHostileMobsRewards() {
+        return this.hostileMobRewards;
+
     }
 
-    public Optional<Rewards> getPassiveMobsRewards() {
-        return this.getEntityGroupRewards(DefaultEntityGroups.PASSIVE);
+    public Rewards getPassiveMobsRewards() {
+        return this.passiveMobRewards;
     }
 
-    public Optional<Rewards> getNeutralMobsRewards() {
-        return this.getEntityGroupRewards(DefaultEntityGroups.NEUTRAL);
+    public Rewards getNeutralMobsRewards() {
+        return this.neutralMobRewards;
     }
 
     public Optional<Rewards> getEntityGroupRewards(final EntityGroup entityGroup) {
         return Optional.ofNullable(this.entityGroupRewards.get(entityGroup));
     }
 
+    public Map<EntityGroup, Rewards> getAllEntityGroupRewards() {
+        return this.entityGroupRewards;
+    }
+
     private static final String KILLS_SECTION = "kills";
     private static final String MILESTONE_SECTION = "milestones";
 
     public void load() {
-        loadAllRewards();
         loadSettings();
+        loadAllRewards();
     }
 
     private void loadAllRewards() {
@@ -115,8 +123,10 @@ public class Settings {
     
     private void loadEntityGroups() {
         final List<File> files = this.getFilesFromDir("mobgroups");
+        this.plugin.debug("Loading entity groups");
+        this.plugin.debug("Total Mob Groups is " + files.size());
         for (final File file : files) {
-            this.loadEntityGroup(file.getName());
+            this.loadEntityGroup(file);
         }
     }
     
@@ -155,7 +165,7 @@ public class Settings {
         if (!file.exists()) {
             return;
         }
-        this.entityGroupRewards.put(DefaultEntityGroups.HOSTILE, loadRewards(file));
+        this.hostileMobRewards = loadRewards(file);
     }
 
     private void loadPassiveMobRewards() {
@@ -164,7 +174,7 @@ public class Settings {
         if (!file.exists()) {
             return;
         }
-        this.entityGroupRewards.put(DefaultEntityGroups.PASSIVE, loadRewards(file));
+        this.passiveMobRewards = loadRewards(file);
     }
 
     private void loadNeutralMobsRewards() {
@@ -173,28 +183,23 @@ public class Settings {
         if (!file.exists()) {
             return;
         }
-        this.entityGroupRewards.put(DefaultEntityGroups.NEUTRAL, loadRewards(file));
+        this.neutralMobRewards = loadRewards(file);
     }
     
-    private void loadEntityGroup(final String fileName) {
-        final File file = FileUtil.getFile(fileName, this.plugin);
-        if (!file.exists()) {
-            return;
-        }
+    private void loadEntityGroup(final File file) {
         final YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
         final Set<String> entities = new HashSet<>(
-                config.getStringList("")
+                config.getStringList("mobs")
         );
-        final String groupName = fileName.replace(".yml", "");
+        this.plugin.debug("Entity groups: " + entities);
+        final String groupName = file.getName().replace(".yml", "");
         final EntityGroup entityGroup = new SetEntityGroup(groupName, entities);
         entities.forEach(entity ->
                 this.entityGroups.put(entity, entityGroup)
         );
-        final String name = file.
-                getName().
-                replace(".yml", "");
         final Rewards rewards = loadRewards(file);
-        this.entityRewards.put(name, rewards);
+        plugin.debug("Rewards is: " + rewards);
+        this.entityGroupRewards.put(entityGroup, rewards);
     }
 
     private Rewards loadRewards(final File file) {

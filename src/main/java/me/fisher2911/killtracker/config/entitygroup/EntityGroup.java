@@ -39,4 +39,11 @@ public abstract class EntityGroup {
     public int hashCode() {
         return Objects.hash(id);
     }
+
+    @Override
+    public String toString() {
+        return "EntityGroup{" +
+                "id='" + id + '\'' +
+                '}';
+    }
 }

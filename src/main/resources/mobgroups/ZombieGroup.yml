@@ -1,52 +1,52 @@
-# mobs in the group
-mobs:
-  - ZOMBIE
-  - HUSK
-  - DROWNED
-# Number of kills
-kills:
-  1:
-    # Rewards
-    1:
-      # reward type
-      type: command
-      command: give %player% ROTTEN_FLESH
-    2:
-      type: message
-      message: You have killed 1 zombie group!
-    3:
-      type: items
-      items:
-        1:
-          material: POTATO
-          amount: 1
-        2:
-          material: CARROT
-          amount: 64
-    4:
-      type: head
-      # random texture
-      texture: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGE3MTI5ZmY4OWNmZDI1MTNiZDdjODk3YzNkNmE0YjJjMWIyZDk5Y2NmOTI2NmFlZDVhZjY0NmY3ZDk2M2VlOCJ9fX0=
-      item-name: "%name%'s head"
-      lore:
-        - ' '
-        - "%name%'s kills"
-# applies every x kills
-milestones:
-  5:
-    1:
-      # reward type
-      type: command
-      command: effect give %player% HUNGER 10 10
-    2:
-      type: message
-      message: '&3You have completed a milestone of killing a zombie group!'
-    3:
-      type: items
-      items:
-        1:
-          material: WODDEN_AXE
-          amount: 3
-        2:
-          material: WOODEN_SWORD
-          amount: 1
+## mobs in the group
+#mobs:
+#  - ZOMBIE
+#  - HUSK
+#  - DROWNED
+## Number of kills
+#kills:
+#  1:
+#    # Rewards
+#    1:
+#      # reward type
+#      type: command
+#      command: give %player% ROTTEN_FLESH
+#    2:
+#      type: message
+#      message: You have killed 1 zombie group!
+#    3:
+#      type: items
+#      items:
+#        1:
+#          material: POTATO
+#          amount: 1
+#        2:
+#          material: CARROT
+#          amount: 64
+#    4:
+#      type: head
+#      # random texture
+#      texture: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGE3MTI5ZmY4OWNmZDI1MTNiZDdjODk3YzNkNmE0YjJjMWIyZDk5Y2NmOTI2NmFlZDVhZjY0NmY3ZDk2M2VlOCJ9fX0=
+#      item-name: "%name%'s head"
+#      lore:
+#        - ' '
+#        - "%name%'s kills"
+## applies every x kills
+#milestones:
+#  5:
+#    1:
+#      # reward type
+#      type: command
+#      command: effect give %player% hunger 10 10
+#    2:
+#      type: message
+#      message: '&3You have completed a milestone of killing a zombie group!'
+#    3:
+#      type: items
+#      items:
+#        1:
+#          material: WODDEN_AXE
+#          amount: 3
+#        2:
+#          material: WOODEN_SWORD
+#          amount: 1

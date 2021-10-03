@@ -101,6 +101,8 @@ public class KillListener implements Listener {
     private void checkEntityGroupRewards(final String entityType, final User killer, final Entity killed) {
         final Set<EntityGroup> entityGroups = MobUtil.getEntityGroups(entityType);
         if (!entityGroups.isEmpty()) {
+            plugin.debug("Has entity groups: " + entityGroups);
+            plugin.debug("Entity group rewards: " + settings.getAllEntityGroupRewards());
             for (final EntityGroup entityGroup : entityGroups) {
                 final Optional<Rewards> rewardsOptional = this.settings.getEntityGroupRewards(entityGroup);
                 rewardsOptional.ifPresent(rewards -> {
@@ -108,33 +110,38 @@ public class KillListener implements Listener {
                     killer.addEntityKill(id);
                     final int amount = killer.getEntityKillAmount(id);
                     rewards.applyRewards(killer.getOfflinePlayer(), killed, amount);
+                    plugin.debug("Rewards Present");
                 });
+                if (rewardsOptional.isEmpty()) {
+                    plugin.debug("Rewards Empty");
+                }
             }
             if (this.settings.useAllTieredRewards()) {
                 checkDefaultEntityGroupRewards(entityType, killer, killed);
             }
             return;
         }
+        plugin.debug("No entity groups");
         checkDefaultEntityGroupRewards(entityType, killer, killed);
     }
 
     private void checkDefaultEntityGroupRewards(final String entityType, final User killer, final Entity killed) {
-        final Optional<Rewards> rewardsOptional;
+        final Rewards rewards;
         final EntityGroup entityGroup;
         if (DefaultEntityGroups.HOSTILE.isInGroup(entityType)) {
-            rewardsOptional = settings.getHostileMobsRewards();
+            rewards = settings.getHostileMobsRewards();
             entityGroup = DefaultEntityGroups.HOSTILE;
         } else if (DefaultEntityGroups.PASSIVE.isInGroup(entityType)) {
-            rewardsOptional = settings.getPassiveMobsRewards();
+            rewards = settings.getPassiveMobsRewards();
             entityGroup = DefaultEntityGroups.PASSIVE;
         } else {
-            rewardsOptional = settings.getNeutralMobsRewards();
+            rewards = settings.getNeutralMobsRewards();
             entityGroup = DefaultEntityGroups.NEUTRAL;
         }
         final String entityGroupId = entityGroup.getId();
         killer.addEntityKill(entityGroupId);
         final int amount = killer.getEntityKillAmount(entityGroupId);
-        rewardsOptional.ifPresent(rewards -> rewards.applyRewards(killer.getOfflinePlayer(), killed, amount));
+        rewards.applyRewards(killer.getOfflinePlayer(), killed, amount);
     }
 
     private void checkPlayerRewards(final Player killed, final User killer) {
