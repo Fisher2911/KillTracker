@@ -114,7 +114,7 @@ public class Settings {
     }
     
     private void loadEntityGroups() {
-        final List<File> files = this.getFilesFromDir("mobgroups.yml");
+        final List<File> files = this.getFilesFromDir("mobgroups");
         for (final File file : files) {
             this.loadEntityGroup(file.getName());
         }
