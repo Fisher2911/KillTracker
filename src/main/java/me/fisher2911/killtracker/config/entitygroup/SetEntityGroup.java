@@ -9,14 +9,25 @@
  * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package me.fisher2911.killtracker.config;
+package me.fisher2911.killtracker.config.entitygroup;
 
-public enum EntityGroup {
+import java.util.Set;
 
-    PASSIVE,
+public class SetEntityGroup extends EntityGroup {
 
-    HOSTILE,
+    private final Set<String> entities;
 
-    NEUTRAL;
+    public SetEntityGroup(final String id, final Set<String> entities) {
+        super(id);
+        this.entities = entities;
+    }
 
+    public Set<String> getEntities() {
+        return entities;
+    }
+
+    @Override
+    public boolean isInGroup(final String group) {
+        return this.entities.contains(group);
+    }
 }

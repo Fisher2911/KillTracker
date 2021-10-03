@@ -11,7 +11,11 @@
 
 package me.fisher2911.killtracker.config;
 
+import com.google.common.collect.*;
 import me.fisher2911.killtracker.KillTracker;
+import me.fisher2911.killtracker.config.entitygroup.DefaultEntityGroups;
+import me.fisher2911.killtracker.config.entitygroup.EntityGroup;
+import me.fisher2911.killtracker.config.entitygroup.SetEntityGroup;
 import me.fisher2911.killtracker.reward.*;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -31,15 +35,14 @@ public class Settings {
     public Settings(final KillTracker plugin) {
         this.plugin = plugin;
         this.itemLoader = new ItemLoader(plugin);
-        this.dataFolder = plugin.getDataFolder();
+        this.dataFolder =this.plugin.getDataFolder();
     }
 
     private final Map<String, Rewards> entityRewards = new HashMap<>();
-
+    // key is entity, not entity group id
+    private final SetMultimap<String, EntityGroup> entityGroups = HashMultimap.create();
+    private final Map<EntityGroup, Rewards> entityGroupRewards = new HashMap<>();
     private Rewards playerRewards;
-    private Rewards hostileMobsRewards;
-    private Rewards passiveMobsRewards;
-    private Rewards neutralMobsRewards;
     private boolean useAllTieredRewards;
     private int delaySamePlayerKills;
     private boolean sendDebugMessages;
@@ -49,20 +52,28 @@ public class Settings {
         return Optional.ofNullable(entityRewards.get(entity));
     }
 
+    public Set<EntityGroup> getEntityGroups(final String entity) {
+        return this.entityGroups.get(entity);
+    }
+
     public Rewards getPlayerRewards() {
         return playerRewards;
     }
 
-    public Rewards getHostileMobsRewards() {
-        return hostileMobsRewards;
+    public Optional<Rewards> getHostileMobsRewards() {
+        return this.getEntityGroupRewards(DefaultEntityGroups.HOSTILE);
     }
 
-    public Rewards getPassiveMobsRewards() {
-        return passiveMobsRewards;
+    public Optional<Rewards> getPassiveMobsRewards() {
+        return this.getEntityGroupRewards(DefaultEntityGroups.PASSIVE);
     }
 
-    public Rewards getNeutralMobsRewards() {
-        return neutralMobsRewards;
+    public Optional<Rewards> getNeutralMobsRewards() {
+        return this.getEntityGroupRewards(DefaultEntityGroups.NEUTRAL);
+    }
+
+    public Optional<Rewards> getEntityGroupRewards(final EntityGroup entityGroup) {
+        return Optional.ofNullable(this.entityGroupRewards.get(entityGroup));
     }
 
     private static final String KILLS_SECTION = "kills";
@@ -74,6 +85,7 @@ public class Settings {
     }
 
     private void loadAllRewards() {
+        loadEntityGroups();
         loadPlayerRewards();
         loadHostileMobRewards();
         loadPassiveMobRewards();
@@ -82,8 +94,8 @@ public class Settings {
     }
 
     private void loadSettings() {
-        plugin.saveDefaultConfig();
-        final ConfigurationSection config = plugin.getConfig();
+       this.plugin.saveDefaultConfig();
+        final ConfigurationSection config =this.plugin.getConfig();
         this.useAllTieredRewards = config.getBoolean("use-all-tiered-rewards");
         this.delaySamePlayerKills = config.getInt("delay-same-player-kills");
         this.sendDebugMessages = config.getBoolean("send-debug-messages");
@@ -91,19 +103,8 @@ public class Settings {
     }
 
     private void loadMobsRewards() {
-        final File folder = new File(dataFolder, "mobs");
-        if (!folder.isDirectory()) {
-            folder.mkdirs();
-        }
-        final File[] files = folder.listFiles();
-        if (files == null) {
-            return;
-        }
+        final List<File> files = this.getFilesFromDir("mobs");
         for (final File file : files) {
-            if (file.getName().toLowerCase(Locale.ROOT).
-                    contains(".ds_store")) {
-                continue;
-            }
             final String name = file.
                     getName().
                     replace(".yml", "");
@@ -111,10 +112,37 @@ public class Settings {
             this.entityRewards.put(name, rewards);
         }
     }
+    
+    private void loadEntityGroups() {
+        final List<File> files = this.getFilesFromDir("mobgroups.yml");
+        for (final File file : files) {
+            this.loadEntityGroup(file.getName());
+        }
+    }
+    
+    private List<File> getFilesFromDir(final String fileName) {
+        final List<File> fileList = new ArrayList<>();
+        final File folder = new File(dataFolder, fileName);
+        if (!folder.isDirectory()) {
+            folder.mkdirs();
+        }
+        final File[] files = folder.listFiles();
+        if (files == null) {
+            return fileList;
+        }
+        for (final File file : files) {
+            if (file.getName().toLowerCase(Locale.ROOT).
+                    contains(".ds_store")) {
+                continue;
+            }
+            fileList.add(file);
+        }
+        return fileList;
+    }
 
     private void loadPlayerRewards() {
         final String fileName = "PlayerRewards.yml";
-        final File file = FileUtil.getFile(fileName, plugin);
+        final File file = FileUtil.getFile(fileName,this.plugin);
         if (!file.exists()) {
             return;
         }
@@ -123,52 +151,73 @@ public class Settings {
 
     private void loadHostileMobRewards() {
         final String fileName = "HostileMobsRewards.yml";
-        final File file = FileUtil.getFile(fileName, plugin);
+        final File file = FileUtil.getFile(fileName,this.plugin);
         if (!file.exists()) {
             return;
         }
-        this.hostileMobsRewards = loadRewards(file);
+        this.entityGroupRewards.put(DefaultEntityGroups.HOSTILE, loadRewards(file));
     }
 
     private void loadPassiveMobRewards() {
         final String fileName = "PassiveMobsRewards.yml";
-        final File file = FileUtil.getFile(fileName, plugin);
+        final File file = FileUtil.getFile(fileName,this.plugin);
         if (!file.exists()) {
             return;
         }
-        this.passiveMobsRewards = loadRewards(file);
+        this.entityGroupRewards.put(DefaultEntityGroups.PASSIVE, loadRewards(file));
     }
 
     private void loadNeutralMobsRewards() {
         final String fileName = "NeutralMobsRewards.yml";
-        final File file = FileUtil.getFile(fileName, plugin);
+        final File file = FileUtil.getFile(fileName, this.plugin);
         if (!file.exists()) {
             return;
         }
-        this.neutralMobsRewards = loadRewards(file);
+        this.entityGroupRewards.put(DefaultEntityGroups.NEUTRAL, loadRewards(file));
+    }
+    
+    private void loadEntityGroup(final String fileName) {
+        final File file = FileUtil.getFile(fileName, this.plugin);
+        if (!file.exists()) {
+            return;
+        }
+        final YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+        final Set<String> entities = new HashSet<>(
+                config.getStringList("")
+        );
+        final String groupName = fileName.replace(".yml", "");
+        final EntityGroup entityGroup = new SetEntityGroup(groupName, entities);
+        entities.forEach(entity ->
+                this.entityGroups.put(entity, entityGroup)
+        );
+        final String name = file.
+                getName().
+                replace(".yml", "");
+        final Rewards rewards = loadRewards(file);
+        this.entityRewards.put(name, rewards);
     }
 
     private Rewards loadRewards(final File file) {
         final Rewards rewards = new Rewards(plugin);
         if (!file.exists()) {
-            plugin.debug(file.getName() + " does not exist", false);
+           this.plugin.debug(file.getName() + " does not exist", false);
             return rewards;
         }
         final String fileName = file.getName();
         final YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
         final ConfigurationSection killsSection = config.getConfigurationSection(KILLS_SECTION);
         if (killsSection != null) {
-            plugin.debug("kills section not null", false);
+           this.plugin.debug("kills section not null", false);
             addRewards(rewards, loadRewards(killsSection, fileName));
         } else {
-            plugin.debug("Kills section null", false);
+           this.plugin.debug("Kills section null", false);
         }
         final ConfigurationSection milestoneSection = config.getConfigurationSection(MILESTONE_SECTION);
         if (milestoneSection != null) {
-            plugin.debug("milestone section not null", false);
+           this.plugin.debug("milestone section not null", false);
             addRewardsMilestones(rewards, loadRewards(milestoneSection, fileName));
         } else {
-            plugin.debug("milestone section null", false);
+           this.plugin.debug("milestone section null", false);
         }
         return rewards;
     }
@@ -183,28 +232,28 @@ public class Settings {
 
     private Map<Integer, List<Reward>> loadRewards(final ConfigurationSection configuration, final String fileName) {
         final Map<Integer, List<Reward>> rewardMap = new HashMap<>();
-        plugin.debug("Keys = " + configuration.getKeys(false), false);
-        plugin.debug("Path = " + configuration.getCurrentPath(), false);
+       this.plugin.debug("Keys = " + configuration.getKeys(false), false);
+       this.plugin.debug("Path = " + configuration.getCurrentPath(), false);
         for (final String key : configuration.getKeys(false)) {
-            plugin.debug("Key is " + key, false);
+           this.plugin.debug("Key is " + key, false);
             try {
                 final int killsRequired = Integer.parseInt(key);
-                plugin.debug("Kills required: " + killsRequired, false);
+               this.plugin.debug("Kills required: " + killsRequired, false);
                 final ConfigurationSection rewardsListConfiguration =
                         configuration.getConfigurationSection(key);
                 if (rewardsListConfiguration == null) {
-                    plugin.debug("RewardsListConfiguration null", false);
+                   this.plugin.debug("RewardsListConfiguration null", false);
                     continue;
                 }
                 for (final String rewardKey : rewardsListConfiguration.getKeys(false)) {
                     final ConfigurationSection rewardConfiguration =
                             rewardsListConfiguration.getConfigurationSection(rewardKey);
                     if (rewardConfiguration == null) {
-                        plugin.debug("RewardConfiguration null", false);
+                       this.plugin.debug("RewardConfiguration null", false);
                         continue;
                     }
                     final String type = rewardConfiguration.getString("type");
-                    plugin.debug("type is " + type, false);
+                   this.plugin.debug("type is " + type, false);
                     if (type == null) {
                         continue;
                     }
@@ -212,25 +261,25 @@ public class Settings {
                     try {
                         final Reward reward = loadRewardFromType(type, fileName, rewardConfiguration);
                         if (reward == null) {
-                            plugin.debug("reward is null", false);
+                           this.plugin.debug("reward is null", false);
                             continue;
                         }
                         final List<Reward> rewardList = rewardMap.
                                 computeIfAbsent(killsRequired, v -> new ArrayList<>());
                         rewardList.add(reward);
                         rewardMap.put(killsRequired, rewardList);
-                        plugin.debug("Added reward: " + reward, false);
+                       this.plugin.debug("Added reward: " + reward, false);
                     } catch (final IllegalArgumentException exception) {
-                        plugin.sendError(exception.getMessage());
+                       this.plugin.sendError(exception.getMessage());
                     }
                 }
 
             } catch (final NumberFormatException exception) {
-                plugin.sendError("Warning, " + key + " is not a valid number " +
+               this.plugin.sendError("Warning, " + key + " is not a valid number " +
                         "for number of kills in file: " + fileName);
             }
         }
-        plugin.debug("rewards = " + rewardMap, false);
+       this.plugin.debug("rewards = " + rewardMap, false);
         return rewardMap;
     }
 
@@ -269,7 +318,7 @@ public class Settings {
                 section.getCurrentPath())) {
             return null;
         }
-        plugin.debug("Message is: " + message, false);
+       this.plugin.debug("Message is: " + message, false);
         return new MessageReward(ChatColor.translateAlternateColorCodes('&', message));
     }
 
@@ -317,7 +366,7 @@ public class Settings {
 
     private boolean checkNull(final Object object, final String errorMessage) {
         if (object == null) {
-            plugin.sendError(errorMessage);
+           this.plugin.sendError(errorMessage);
             return true;
         }
         return false;

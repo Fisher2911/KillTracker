@@ -17,6 +17,7 @@ import me.fisher2911.killtracker.KillTracker;
 import me.fisher2911.killtracker.config.Settings;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 
 import java.util.Collection;
 import java.util.List;

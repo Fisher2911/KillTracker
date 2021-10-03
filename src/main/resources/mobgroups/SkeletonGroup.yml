@@ -1,0 +1,51 @@
+# mobs in the group
+mobs:
+  - SKELETON
+  - WITHER_SKELETON
+# Number of kills
+kills:
+  1:
+    # Rewards
+    1:
+      # reward type
+      type: command
+      command: give %player% WITHER_SKELETON_SKULL
+    2:
+      type: message
+      message: You have killed 1 skeleton group!
+    3:
+      type: items
+      items:
+        1:
+          material: BOW
+          amount: 1
+        2:
+          material: ARROW
+          amount: 64
+    4:
+      type: head
+      # random texture
+      texture: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGE3MTI5ZmY4OWNmZDI1MTNiZDdjODk3YzNkNmE0YjJjMWIyZDk5Y2NmOTI2NmFlZDVhZjY0NmY3ZDk2M2VlOCJ9fX0=
+      item-name: "%name%'s head"
+      lore:
+        - ' '
+        - "%name%'s kills"
+# applies every x kills
+milestones:
+  5:
+    1:
+      # reward type
+      type: command
+      command: effect give %player% DECAY 10 10
+    2:
+      type: message
+      message: '&3You have completed a milestone of killing a skeleton group!'
+    3:
+      type: items
+      items:
+        1:
+          material: BONE
+          amount: 3
+        2:
+          material: COAL
+          amount: 1

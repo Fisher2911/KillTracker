@@ -12,7 +12,8 @@
 package me.fisher2911.killtracker.listeners;
 
 import me.fisher2911.killtracker.KillTracker;
-import me.fisher2911.killtracker.config.EntityGroup;
+import me.fisher2911.killtracker.config.entitygroup.DefaultEntityGroups;
+import me.fisher2911.killtracker.config.entitygroup.EntityGroup;
 import me.fisher2911.killtracker.reward.Rewards;
 import me.fisher2911.killtracker.config.Settings;
 import me.fisher2911.killtracker.user.KillInfo;
@@ -28,6 +29,7 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 public class KillListener implements Listener {
@@ -88,28 +90,51 @@ public class KillListener implements Listener {
              acceptMoreRewards = settings.useAllTieredRewards();
         }
         if (acceptMoreRewards) {
-            plugin.debug("Accepting more rewards");
-            String entityGroup = EntityGroup.NEUTRAL.toString();
-            if (killed instanceof Monster) {
-                rewards = settings.getHostileMobsRewards();
-                entityGroup = EntityGroup.HOSTILE.toString();
-                plugin.debug("Mob is hostile");
-            } else if (killed instanceof Animals) {
-                rewards = settings.getPassiveMobsRewards();
-                entityGroup = EntityGroup.PASSIVE.toString();
-                plugin.debug("Mob is passive");
-            } else {
-                rewards = settings.getNeutralMobsRewards();
-                plugin.debug("Mob is neutral");
-            }
-            plugin.debug("amount is " + amount);
-            killer.addEntityKill(entityGroup);
-            amount = killer.getEntityKillAmount(entityGroup);
+            checkEntityGroupRewards(entityType, killer, killed);
         }
         if (rewards == null) {
             return;
         }
         rewards.applyRewards(killer.getOfflinePlayer(), killed, amount);
+    }
+
+    private void checkEntityGroupRewards(final String entityType, final User killer, final Entity killed) {
+        final Set<EntityGroup> entityGroups = MobUtil.getEntityGroups(entityType);
+        if (!entityGroups.isEmpty()) {
+            for (final EntityGroup entityGroup : entityGroups) {
+                final Optional<Rewards> rewardsOptional = this.settings.getEntityGroupRewards(entityGroup);
+                rewardsOptional.ifPresent(rewards -> {
+                    final String id = entityGroup.getId();
+                    killer.addEntityKill(id);
+                    final int amount = killer.getEntityKillAmount(id);
+                    rewards.applyRewards(killer.getOfflinePlayer(), killed, amount);
+                });
+            }
+            if (this.settings.useAllTieredRewards()) {
+                checkDefaultEntityGroupRewards(entityType, killer, killed);
+            }
+            return;
+        }
+        checkDefaultEntityGroupRewards(entityType, killer, killed);
+    }
+
+    private void checkDefaultEntityGroupRewards(final String entityType, final User killer, final Entity killed) {
+        final Optional<Rewards> rewardsOptional;
+        final EntityGroup entityGroup;
+        if (DefaultEntityGroups.HOSTILE.isInGroup(entityType)) {
+            rewardsOptional = settings.getHostileMobsRewards();
+            entityGroup = DefaultEntityGroups.HOSTILE;
+        } else if (DefaultEntityGroups.PASSIVE.isInGroup(entityType)) {
+            rewardsOptional = settings.getPassiveMobsRewards();
+            entityGroup = DefaultEntityGroups.PASSIVE;
+        } else {
+            rewardsOptional = settings.getNeutralMobsRewards();
+            entityGroup = DefaultEntityGroups.NEUTRAL;
+        }
+        final String entityGroupId = entityGroup.getId();
+        killer.addEntityKill(entityGroupId);
+        final int amount = killer.getEntityKillAmount(entityGroupId);
+        rewardsOptional.ifPresent(rewards -> rewards.applyRewards(killer.getOfflinePlayer(), killed, amount));
     }
 
     private void checkPlayerRewards(final Player killed, final User killer) {

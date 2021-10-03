@@ -12,9 +12,14 @@
 package me.fisher2911.killtracker.util;
 
 import me.fisher2911.killtracker.KillTracker;
+import me.fisher2911.killtracker.config.entitygroup.EntityGroup;
+import me.fisher2911.killtracker.config.Settings;
+import org.bukkit.entity.Animals;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Monster;
 
 import java.util.Optional;
+import java.util.Set;
 
 public class MobUtil {
 
@@ -36,5 +41,18 @@ public class MobUtil {
             return false;
         }
         return MythicMobs.isMythicMob(entity);
+    }
+
+    public static Set<EntityGroup> getEntityGroups(final String entity) {
+        final Settings settings = plugin.getSettings();
+        return settings.getEntityGroups(entity);
+    }
+
+    public static boolean isPassive(final Entity entity) {
+        return entity instanceof Animals;
+    }
+
+    public static boolean isHostile(final Entity entity) {
+        return entity instanceof Monster;
     }
 }
