@@ -15,7 +15,7 @@ plugins {
 }
 
 group 'me.fisher2911'
-version '1.0.9'
+version '1.1.0'
 
 repositories {
     mavenCentral()
@@ -27,15 +27,15 @@ repositories {
 }
 
 dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
-    compileOnly 'org.spigotmc:spigot-api:1.17-R0.1-SNAPSHOT'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+    compileOnly 'org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT'
     compileOnly 'me.clip:placeholderapi:2.10.9'
     implementation "dev.triumphteam:triumph-gui:3.0.3"
     implementation 'me.mattstudios.utils:matt-framework:1.4.6'
-    compileOnly 'org.jetbrains:annotations:16.0.2'
-    implementation "net.kyori:adventure-api:4.8.1"
-    implementation 'net.kyori:adventure-text-serializer-legacy:4.8.1'
+    compileOnly 'org.jetbrains:annotations:22.0.0'
+    implementation 'net.kyori:adventure-api:4.9.0'
+    implementation 'net.kyori:adventure-text-serializer-legacy:4.9.0'
     implementation 'co.aikar:taskchain-bukkit:3.7.2'
     implementation 'org.bstats:bstats-bukkit:2.2.1'
     compileOnly 'io.lumine.xikage:MythicMobs:4.11.0-SNAPSHOT'

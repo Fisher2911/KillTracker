@@ -51,7 +51,7 @@ entity-menu:
       amount: 1
       name: '&aCow Kills'
       player-name: COW
-      type: cow
+      type: COW
       lore:
         - ' '
         - '%kills%'
@@ -62,7 +62,7 @@ entity-menu:
       texture: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDg3NWViNDVhY2EzNGE0ZDI0YzNkYzEzOTVmYzAyMGNjZjM3ZjgyNWExN2IwNTRhMjJmZDI0YjE4OWMyNGMifX19
       amount: 1
       name: '&aPig Kills'
-      type: pig
+      type: PIG
       lore:
         - ' '
         - '%kills%'
