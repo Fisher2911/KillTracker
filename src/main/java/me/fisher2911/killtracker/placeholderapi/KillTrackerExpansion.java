@@ -126,7 +126,7 @@ public class KillTrackerExpansion extends PlaceholderExpansion {
         }
         final String data = splitData[1];
         if (identifier.startsWith("mobkills")) {
-            return String.valueOf(user.getEntityKillAmount(data.toUpperCase()));
+            return String.valueOf(user.getEntityKillAmount(data));
         }
 
         if (identifier.startsWith("playerkills")) {
